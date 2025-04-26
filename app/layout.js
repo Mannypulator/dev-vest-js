@@ -1,13 +1,16 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Inter } from "next/font/google";
+import "../assets/styles/globals.css";
+import { ModalProvider } from "@/components/modal-context";
+import { Modals } from "@/components/Modals";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import HeaderOutline from "@/components/HeaderOutline";
+import "photoswipe/dist/photoswipe.css";
+import { SessionProvider } from "next-auth/react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
   subsets: ["latin"],
 });
 
@@ -19,10 +22,28 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${inter.className} antialiased`}>
+        <SessionProvider>
+          <ModalProvider>
+            <Header />
+            <HeaderOutline />
+            {children}
+            <Modals />
+            <Footer />
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
+          </ModalProvider>
+        </SessionProvider>
       </body>
     </html>
   );

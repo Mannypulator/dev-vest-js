@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary Colors */
+    --primary: #e6b027;
+    --primary-hover: #d4a025;
+
+    /* Blue Colors */
+    --blue-500: #3b82f6;
+    --blue-600: #2563eb;
+
+    /* Text Colors */
+    --text-main: #e6b027;
+    --text-primary: #4b5563; /* gray-600 */
+    --text-secondary: #6b7280; /* gray-500 */
+    --text-success: #166534; /* green-900 */
+    --text-warning: #c2410c; /* orange-700 */
+
+    /* Background Colors */
+    --bg-white: #ffffff;
+    --bg-gray-100: #f3f4f6;
+
+    /* Border Colors */
+    --border-gray-100: #f3f4f6;
+  }
+}
+
+/* Apply variables to existing classes */
+
+.text-main {
+  color: var(--text-main);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-success {
+  color: var(--text-success);
+}
+
+.text-warning {
+  color: var(--text-warning);
+}
+
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.bg-primary-hover:hover {
+  background-color: var(--primary-hover);
+}
+
+.bg-blue-500 {
+  background-color: var(--blue-500);
+}
+
+.bg-blue-600:hover {
+  background-color: var(--blue-600);
+}
+
+.border-gray-100 {
+  border-color: var(--border-gray-100);
+}
+
+@layer base {
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+a {
+  border-image-slice: 1;
+  border-image-width: 2px;
+  border-style: solid;
+}
