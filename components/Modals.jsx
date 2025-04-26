@@ -8,16 +8,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useModal } from "./modal-context";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { Poppins } from "next/font/google";
 import { Label } from "./ui/label";
-import logo from "@/assets/images/logo.svg";
-import facebook from "@/assets/images/facebook.svg";
-import google from "@/assets/images/google.svg";
 import { Input } from "./ui/input";
-import email from "@/assets/images/email.svg";
 import { useActionState, useEffect, useState } from "react";
 import { Country, State } from "country-state-city";
 import {
@@ -30,13 +25,14 @@ import {
 import { Checkbox } from "./ui/checkbox";
 import { signIn } from "next-auth/react";
 import { signInDefaultValues } from "@/lib/constants";
-import { signInWithCredentials, signUpUser } from "@/lib/actions/user.actions";
 import { useFormStatus } from "react-dom";
-import {
-  addProperty,
-  editPropertyById,
-  getPropertyById,
-} from "@/lib/actions/property.actions";
+import { assets } from "@/assets/assets";
+import signInWithCredentials from "@/app/action/signInWithCredentials";
+import signUpUser from "@/app/action/signUpUser";
+import addProperty from "@/app/action/addProperty";
+import getPropertyById from "@/app/action/getPropertyById";
+import editPropertyById from "@/app/action/editPropertyById";
+import { useModal } from "./ModelContext";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -248,7 +244,7 @@ export function Modals() {
               <div className="flex justify-center mb-4 space-y-0">
                 <Image
                   className="-mb-4"
-                  src={logo}
+                  src={assets.logo}
                   alt="Drive Vest Logo"
                   height={40}
                   width={40}
@@ -265,7 +261,7 @@ export function Modals() {
                   className="w-1/2 text-black border-black border-[1px] rounded-[5px] text-xs"
                 >
                   <Image
-                    src={facebook}
+                    src={assets.facebook}
                     alt="facebook logo"
                     height={15}
                     width={15}
@@ -277,8 +273,8 @@ export function Modals() {
                   className="w-1/2 text-black border-black border-[1px] rounded-[5px] text-xs"
                 >
                   <Image
-                    src={google}
-                    alt="facebook logo"
+                    src={assets.google}
+                    alt="Google logo"
                     height={15}
                     width={15}
                   />
@@ -380,7 +376,7 @@ export function Modals() {
               <div className="flex justify-center mb-4 space-y-0">
                 <Image
                   className="-mb-4"
-                  src={logo}
+                  src={assets.logo}
                   alt="Drive Vest Logo"
                   height={40}
                   width={40}
@@ -400,7 +396,7 @@ export function Modals() {
                   className="w-1/2 text-black border-black border-[1px] rounded-[5px] text-xs"
                 >
                   <Image
-                    src={facebook}
+                    src={assets.facebook}
                     alt="facebook logo"
                     height={15}
                     width={15}
@@ -413,7 +409,7 @@ export function Modals() {
                   className="w-1/2 text-black border-black border-[1px] rounded-[5px] text-xs"
                 >
                   <Image
-                    src={google}
+                    src={assets.google}
                     alt="facebook logo"
                     height={15}
                     width={15}
@@ -544,7 +540,7 @@ export function Modals() {
             <div className="flex justify-center mb-4 space-y-0">
               <Image
                 className="-mb-4"
-                src={logo}
+                src={assets.logo}
                 alt="Drive Vest Logo"
                 height={40}
                 width={40}
@@ -578,7 +574,7 @@ export function Modals() {
             <div className="flex justify-center mb-4 space-y-0">
               <Image
                 className="-mb-4"
-                src={logo}
+                src={assets.logo}
                 alt="Drive Vest Logo"
                 height={40}
                 width={40}
@@ -624,7 +620,7 @@ export function Modals() {
           <DialogHeader>
             <Image
               className="mx-auto"
-              src={email}
+              src={assets.email}
               alt="email"
               height={66}
               width={67}

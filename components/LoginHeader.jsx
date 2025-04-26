@@ -1,11 +1,8 @@
 "use client";
 import Image from "next/image";
-import logo from "@/assets/images/logo.svg";
 import { Bell, Clock } from "lucide-react";
-import defaultProfile from "@/assets/images/default-profile.svg"; // Replace with actual user profile image
 import { Poppins } from "next/font/google";
 import Link from "next/link";
-import { useModal } from "./modal-context";
 import { useSession } from "next-auth/react";
 import {
   DropdownMenu,
@@ -14,8 +11,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { signOutUser } from "@/lib/actions/user.actions";
 import { Button } from "./ui/button";
+import { assets } from "@/assets/assets";
+import signOutUser from "@/app/action/signOutUser";
+import { useModal } from "./ModelContext";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -35,7 +34,7 @@ const LoginHeader = () => {
         {/* add link to image to go home page */}
         <Link href="/">
           <Image
-            src={logo}
+            src={assets.logo}
             alt="Drive Vest Logo"
             height={40}
             width={40}
@@ -60,7 +59,7 @@ const LoginHeader = () => {
           <DropdownMenuTrigger className="border-none bg-white outline-none rounded-full">
             <div className="flex items-center space-x-2 bg-white rounded-full p-2">
               <Image
-                src={session?.user?.image || defaultProfile}
+                src={session?.user?.image || assets.default_profile}
                 alt="User Avatar"
                 width={25}
                 height={25}

@@ -1,12 +1,8 @@
 import Image from "next/image";
-import logo from "@/assets/images/logo.svg";
-import facebookLogo from "@/assets/images/facebook-logo.svg";
-import instagramLogo from "@/assets/images/instagram-logo.svg";
-import linkedInLogo from "@/assets/images/linkedin-log.svg";
-import skypeLogo from "@/assets/images/skype-logo.svg";
-import xLogo from "@/assets/images/x-logo.svg";
+
 import { ChevronDown, Globe } from "lucide-react";
 import { Poppins } from "next/font/google";
+import { assets } from "@/assets/assets";
 
 const poppins = Poppins({
   weight: "100",
@@ -23,7 +19,7 @@ const Footer = () => {
           <div className="flex flex-col items-center md:items-start">
             <Image
               className="mb-6"
-              src={logo}
+              src={assets.logo}
               width={60}
               height={60}
               alt="drive vest logo"
@@ -42,7 +38,7 @@ const Footer = () => {
               <li>
                 <Image
                   className="mb-6"
-                  src={facebookLogo}
+                  src={assets.facebook_logo}
                   width={25}
                   height={25}
                   alt="facebook logo"
@@ -52,7 +48,7 @@ const Footer = () => {
               <li>
                 <Image
                   className="mb-6"
-                  src={xLogo}
+                  src={assets.x_logo}
                   width={30}
                   height={30}
                   alt="x logo"
@@ -62,7 +58,7 @@ const Footer = () => {
               <li>
                 <Image
                   className="mb-6"
-                  src={skypeLogo}
+                  src={assets.skype_logo}
                   width={30}
                   height={30}
                   alt="skype logo"
@@ -72,7 +68,7 @@ const Footer = () => {
               <li>
                 <Image
                   className="mb-6"
-                  src={instagramLogo}
+                  src={assets.instagram_logo}
                   width={30}
                   height={30}
                   alt="instagram logo"
@@ -82,7 +78,7 @@ const Footer = () => {
               <li>
                 <Image
                   className="mb-6"
-                  src={linkedInLogo}
+                  src={assets.linkedin_logo}
                   width={30}
                   height={30}
                   alt="linkedin logo"
@@ -134,7 +130,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-8 text-base bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)] bg-clip-text text-transparent text-center">
-          © Drive West 2025. All rights reserved.
+          © Drive West {new Date().getFullYear()}. All rights reserved.
         </div>
       </div>
     </footer>

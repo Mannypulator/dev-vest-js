@@ -1,4 +1,4 @@
-import check from "@/assets/images/check.svg";
+import { assets } from "@/assets/assets";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -18,7 +18,7 @@ const Hero = () => {
         </p>
         <p className="text-gray-300 text-base sm:text-lg mb-6 flex items-center gap-2">
           <Image
-            src={check}
+            src={assets.check}
             height={22}
             width={22}
             priority={true}

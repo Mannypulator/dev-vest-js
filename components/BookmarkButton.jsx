@@ -2,11 +2,9 @@
 import { useState, useEffect } from "react";
 import { Bookmark } from "lucide-react";
 import { useSession } from "next-auth/react";
-import {
-  bookmarkProperty,
-  checkBookmarkStatus,
-} from "@/lib/actions/user.actions";
 import { toast } from "react-toastify";
+import checkBookmarkStatus from "@/app/action/checkBookmarkStatus";
+import bookmarkProperty from "@/app/action/bookmarkProperty";
 
 const BookmarkButton = ({ property }) => {
   const { data: session } = useSession();

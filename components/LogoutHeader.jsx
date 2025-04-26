@@ -1,10 +1,10 @@
 "use client";
 import { Button } from "./ui/button";
-import logo from "@/assets/images/logo.svg";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
-import { useModal } from "./modal-context";
 import Link from "next/link";
+import { assets } from "@/assets/assets";
+import { useModal } from "./ModelContext";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -21,7 +21,7 @@ const LogoutHeader = () => {
       <div className="flex items-center">
         <Link href="/">
           <Image
-            src={logo}
+            src={assets.logo}
             alt="Drive Vest Logo"
             height={40}
             width={40}
