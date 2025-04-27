@@ -1,11 +1,13 @@
 "use server";
+import { signOut } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 
-import connectDB from "@/config/database";
-import { signOut } from "next-auth/react";
-
-async function signOutUser() {
-  await connectDB();
-  await signOut();
+export async function signOutUser() {
+  try {
+    await signOut({ redirect: false });
+    redirect("/");
+  } catch (error) {
+    console.error("Sign-out error:", error);
+    throw new Error("Failed to sign out");
+  }
 }
-
-export default signOutUser;

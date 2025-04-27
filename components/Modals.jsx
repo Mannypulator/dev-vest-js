@@ -24,15 +24,15 @@ import {
 } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
 import { signIn } from "next-auth/react";
-import { signInDefaultValues } from "@/lib/constants";
 import { useFormStatus } from "react-dom";
 import { assets } from "@/assets/assets";
-import signInWithCredentials from "@/app/action/signInWithCredentials";
 import signUpUser from "@/app/action/signUpUser";
 import addProperty from "@/app/action/addProperty";
 import getPropertyById from "@/app/action/getPropertyById";
 import editPropertyById from "@/app/action/editPropertyById";
 import { useModal } from "./ModelContext";
+import { signInWithCredentials } from "@/app/action/signInWithCredentials";
+import { signInDefaultValues } from "@/lib/constants";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -251,7 +251,7 @@ export function Modals() {
                 />
               </div>
               <DialogTitle
-                className={`${poppins.className} text-center text-2xl font-bold -mb-4`}
+                className={`${poppins.className} text-center text-2xl font-bold mb-4`}
               >
                 Log In
               </DialogTitle>

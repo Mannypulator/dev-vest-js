@@ -1,54 +1,41 @@
 "use server";
-
 import connectDB from "@/config/database";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
-import { getSessionUser } from "@/utils/getSessionUser";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
-async function signInWithCredentials(formData) {
+export async function signInWithCredentials(email, password) {
   await connectDB();
 
-  // Check if user is already logged in
-  const sessionUser = await getSessionUser();
-  if (sessionUser && sessionUser.userId) {
-    return { error: "You are already logged in" };
+  // Validate email
+  if (!email || typeof email !== "string" || !email.includes("@")) {
+    throw new Error("Invalid email address");
   }
 
-  const email = formData.get("email");
-  const password = formData.get("password");
-
-  // Basic validation
-  if (!email || !password) {
-    return { error: "Email and password are required" };
+  // Validate password
+  if (!password || typeof password !== "string") {
+    throw new Error("Password is required");
   }
 
-  try {
-    // Find user by email
-    const user = await User.findOne({ email });
-    if (!user) {
-      return { error: "Invalid email or password" };
-    }
-
-    // Check if password exists (since it's optional in schema)
-    if (!user.password) {
-      return { error: "No password set for this account" };
-    }
-
-    // Compare password with hashed password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return { error: "Invalid email or password" };
-    }
-
-    // Revalidate and redirect
-    revalidatePath("/", "layout");
-    redirect("/");
-  } catch (error) {
-    console.error("Sign-in error:", error);
-    return { error: "An error occurred during sign-in" };
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new Error("Invalid email or password");
   }
+
+  if (!user.password) {
+    throw new Error("No password set for this account");
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    throw new Error("Invalid email or password");
+  }
+
+  return {
+    id: user._id.toString(),
+    email: user.email,
+    name: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    image: user.image,
+  };
 }
-
-export default signInWithCredentials;

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Bell, Clock } from "lucide-react";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +13,9 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { assets } from "@/assets/assets";
-import signOutUser from "@/app/action/signOutUser";
+// import { signOutUser } from "@/app/action/signOutUser";
 import { useModal } from "./ModelContext";
+import toast from "react-hot-toast";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -25,13 +26,21 @@ const LoginHeader = () => {
   const { openModal } = useModal();
   const { data: session } = useSession();
 
-  console.log(session);
+  const handleSignOut = async () => {
+    try {
+      await signOutUser();
+      toast.success("Signed out successfully");
+    } catch (error) {
+      toast.error(error.message || "Failed to sign out");
+      console.error("Sign-out error:", error);
+    }
+  };
+
   return (
     <header
       className={`${poppins.className} bg-[linear-gradient(219.84deg,_var(--text-primary)_4.14%,_var(--text-secondary)_44.22%)] text-white py-4 px-24 flex justify-between items-center`}
     >
       <div className="flex items-center">
-        {/* add link to image to go home page */}
         <Link href="/">
           <Image
             src={assets.logo}
@@ -97,23 +106,14 @@ const LoginHeader = () => {
                   Saved Properties
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() => signOutUser()}
-              >
-                <form action={signOutUser} className="outline-none border-none">
-                  <Button className="rounded-[5px] outline-none border-none mx-auto px-4 py-1 text-center shadow-none">
-                    Logout
-                  </Button>
-                </form>
+              <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
+                <span className="w-full">Logout</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-
-        {/* Right button */}
         <Button
-          className=" bg-[#E6B027] text-white py-2 px-6 rounded-[5px]"
+          className="bg-[#E6B027] text-white py-2 px-6 rounded-[5px]"
           onClick={() => openModal("add-post")}
         >
           + Post
