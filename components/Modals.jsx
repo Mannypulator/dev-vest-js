@@ -238,6 +238,8 @@ export function Modals() {
   return (
     <>
       <Dialog open={activeModal === "login"} onOpenChange={closeModal}>
+
+        {/* ================ Login ================ */}
         <DialogContent className="bg-white w-[26rem] p-6 py-10 outline-0 border-none">
           <form action={signInAction}>
             <DialogHeader>
@@ -369,6 +371,8 @@ export function Modals() {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* ------------------ Register modal ------------------- */}
       <Dialog open={activeModal === "signup"} onOpenChange={closeModal}>
         <DialogContent className="bg-white w-[26rem] p-6 py-10 outline-0 border-none">
           <form action={signUpAction}>
@@ -387,10 +391,10 @@ export function Modals() {
               >
                 Create a new account
               </DialogTitle>
-              <DialogDescription className="text-center text-xs text-gray-500">
+              <DialogDescription className="text-center text-xs text-gray-500 py-2">
                 Full access to in any of our products
               </DialogDescription>
-              <div className="flex space-x-4">
+              <div className="flex space-x-2 px-2">
                 <Button
                   onClick={() => signIn("facebook")}
                   className="w-1/2 text-black border-black border-[1px] rounded-[5px] text-xs"
@@ -425,7 +429,7 @@ export function Modals() {
             </DialogHeader>
             <div className="space-y-1">
               <div className="flex space-x-4">
-                <div>
+                <div className="py-2">
                   <Label className="text-xs font-normal text-[#0A0A0B]">
                     First Name*
                   </Label>
@@ -439,7 +443,7 @@ export function Modals() {
                     className="w-full px-4 py-2 border border-[#EAECF0] rounded-[5px] placeholder:text-[#9F9C9C] placeholder:text-xs placeholder:font-normal"
                   />
                 </div>
-                <div>
+                <div className="py-2">
                   <Label className="text-xs font-normal text-[#0A0A0B]">
                     Last Name*
                   </Label>
@@ -454,7 +458,7 @@ export function Modals() {
                   />
                 </div>
               </div>
-              <div>
+              <div className="py-2">
                 <Label className="text-xs font-normal text-[#0A0A0B]">
                   Email*
                 </Label>
@@ -468,7 +472,7 @@ export function Modals() {
                   className="w-full px-4 py-2 border border-[#EAECF0] rounded-[5px] placeholder:text-[#9F9C9C] placeholder:text-xs placeholder:font-normal"
                 />
               </div>
-              <div>
+              <div className="py-2">
                 <Label className="text-xs font-normal text-[#0A0A0B]">
                   Phone Number*
                 </Label>
@@ -482,7 +486,7 @@ export function Modals() {
                   className="w-full px-4 py-2 border border-[#EAECF0] rounded-[5px] placeholder:text-[#9F9C9C] placeholder:text-xs placeholder:font-normal"
                 />
               </div>
-              <div className="-mt-4">
+              <div className="py-2">
                 <Label className="text-xs font-normal text-[#0A0A0B]">
                   Password*
                 </Label>
@@ -493,10 +497,10 @@ export function Modals() {
                   autoComplete="password"
                   required
                   placeholder="Enter your password"
-                  className="w-full px-4 py-2 border border-[#EAECF0] rounded-[5px] placeholder:text-[#9F9C9C] placeholder:text-xs placeholder:font-normal -mt-2"
+                  className="w-full px-4 py-2 border border-[#EAECF0] rounded-[5px] placeholder:text-[#9F9C9C] placeholder:text-xs placeholder:font-normal"
                 />
               </div>
-              <p className={`${poppins.className} text-xs text-gray-500`}>
+              <p className={`${poppins.className} text-xs text-gray-500 py-2`}>
                 Password must have minimum 7 Characters
               </p>
             </div>
