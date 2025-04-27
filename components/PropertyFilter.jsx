@@ -44,7 +44,7 @@ const PropertyFilters = () => {
   };
   return (
     <form onSubmit={handleSubmit}>
-      <section className="md:absolute border border-white shadow-sm outline-none bottom-0 top-[500px] left-0 md:left-20 container flex flex-col md:flex-row justify-center gap-8 px-4 md:px-8 pt-6 bg-white rounded-tl-[10px] rounded-tr-[10px] w-full md:w-[1280px] h-auto md:h-[120px] text-[#121212]">
+      <section className="border border-white shadow-sm outline-none bottom-0 top-[500px] left-0 md:left-20 container flex flex-col md:flex-row justify-center gap-8 px-4 md:px-8 pt-6 bg-white rounded-tl-[10px] rounded-tr-[10px] w-full h-auto md:h-[120px] text-[#121212]">
         {/* Property Location */}
         <div className="relative w-full">
           <Label
