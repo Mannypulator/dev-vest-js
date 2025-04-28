@@ -1,5 +1,6 @@
 import PropertyListings from "@/components/PropertyListings";
 import { Poppins } from "next/font/google";
+import Link from "next/link";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -8,12 +9,17 @@ const poppins = Poppins({
 
 export default function PropertiesPage() {
   return (
-    <section className={`${poppins.className} px-6 lg:px-24 py-12`}>
+    <section
+      className={`${poppins.className} py-4 px-5 sm:px-10 md:px-20 w-full`}
+    >
       <div className="text-sm text-gray-500 flex items-center gap-2">
-        <span>Home</span> <span className="text-[#E6B027]">›</span>{" "}
+        <Link href="/" className="hover:text-[#E6B027]">
+          Home
+        </Link>
+        <span className="text-[#E6B027]">›</span>{" "}
         <span className="text-[#E6B027] font-semibold">Property for Sale</span>
       </div>
-      <h2 className="text-xl lg:text-3xl font-bold text-[#E6B027] mt-4 -mb-12">
+      <h2 className="text-xl py-8 lg:text-3xl font-bold text-[#E6B027] -mb-12">
         Property for Sale
       </h2>
       <PropertyListings seeAllLink={false} title={false} />

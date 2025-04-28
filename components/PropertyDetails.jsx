@@ -21,6 +21,10 @@ const PropertyDetails = ({ property }) => {
           Home
         </Link>
         <span className="text-[#E6B027]">›</span>
+        <Link href="/properties" className="hover:text-[#E6B027]">
+          Properties
+        </Link>
+        <span className="text-[#E6B027]">›</span>
         <span className="text-[#E6B027] font-semibold">{property?.name}</span>
       </div>
 

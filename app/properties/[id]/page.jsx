@@ -43,7 +43,7 @@ export default async function PropertyDetailPage({ params }) {
   const property = JSON.parse(JSON.stringify(propertyDoc));
 
   return (
-    <section className={`${poppins.className} px-6 lg:px-24 py-12`}>
+    <section className={`${poppins.className} py-4 px-5 sm:px-10 md:px-20`}>
       <PropertyDetails property={property} />
     </section>
   );

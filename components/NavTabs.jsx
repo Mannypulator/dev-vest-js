@@ -31,7 +31,7 @@ const NavTabs = () => {
 
   return (
     <nav className="bg-white py-2 pt-16">
-      <div className="container mx-auto px-4 flex justify-around space-x-4 sm:space-x-8 overflow-x-auto">
+      <div className="container mx-auto py-4 px-5 sm:px-10 md:px-20 flex justify-around space-x-4 sm:space-x-8 overflow-x-auto">
         {tabs.map((tab) => (
           <button
             key={tab}

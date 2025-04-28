@@ -17,7 +17,7 @@ const PropertyListings = async ({ title = true, seeAllLink = true }) => {
   );
 
   return (
-    <section className="container mx-auto max-w-screen-xl px-5 py-10">
+    <section className="container mx-auto max-w-screen-xl py-4 px-5 sm:px-10 md:px-20">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
         {title && (
           <h2
