@@ -38,7 +38,7 @@ const LoginHeader = () => {
 
   return (
     <header
-      className={`${poppins.className} bg-[linear-gradient(219.84deg,_var(--text-primary)_4.14%,_var(--text-secondary)_44.22%)] text-white py-4 px-24 flex justify-between items-center`}
+      className={`${poppins.className} bg-[linear-gradient(219.84deg,_var(--text-primary)_4.14%,_var(--text-secondary)_44.22%)] text-white py-4 px-5 sm:px-10 md:px-20 flex justify-between items-center`}
     >
       <div className="flex items-center">
         <Link href="/">
@@ -66,7 +66,7 @@ const LoginHeader = () => {
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger className="border-none bg-white outline-none rounded-full cursor-pointer">
-            <div className="flex items-center space-x-2 bg-white rounded-full p-2">
+            <div className="flex items-center space-x-2 bg-white rounded-full p-1 md:p-2">
               <Image
                 src={session?.user?.image || assets.default_profile}
                 alt="User Avatar"
@@ -74,7 +74,7 @@ const LoginHeader = () => {
                 height={25}
                 className="rounded-full"
               />
-              <span className="text-black">{session?.user?.name ?? ""}</span>
+              <span className="text-black hidden sm:block">{session?.user?.name ?? ""}</span>
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +113,7 @@ const LoginHeader = () => {
           </DropdownMenuContent>
         </DropdownMenu>
         <Button
-          className="bg-[#E6B027] text-white py-2 px-6 rounded-[5px] cursor-pointer"
+          className="bg-[#E6B027] text-white py-0 text-xs sm:text-sm md:text-base sm:py-1 md:py-2 px-2 sm:px-4 md:px-6 rounded-[5px] cursor-pointer"
           onClick={() => openModal("add-post")}
         >
           + Post

@@ -12,6 +12,7 @@ export default function Home() {
       <Head>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <Hero />
       <PropertyFilters />
       <NavTabs />
