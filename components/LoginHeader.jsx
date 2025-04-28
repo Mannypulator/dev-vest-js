@@ -96,17 +96,17 @@ const LoginHeader = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white rounded-[5px] outline-none border-none">
             <DropdownMenuGroup>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer hover:bg-gray-300">
                 <Link href="/profile" className="w-full">
                   Profile
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer hover:bg-gray-300">
                 <Link href="/properties/saved" className="w-full">
                   Saved Properties
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
+              <DropdownMenuItem className="cursor-pointer hover:bg-gray-300" onClick={() => signOut()}>
                 <span className="w-full">Logout</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>

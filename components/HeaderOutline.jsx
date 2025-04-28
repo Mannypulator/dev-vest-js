@@ -24,7 +24,7 @@ const HeaderOutline = () => {
         <div className="flex items-center text-lg space-x-2">
           <MapPin size={15} />
           <Select>
-            <SelectTrigger className="w-[180px] border-0 outline-none focus:ring-0">
+            <SelectTrigger className="w-[180px] border-0 outline-none focus:ring-0 cursor-pointer">
               <SelectValue
                 placeholder="All Cities(NGR)"
                 className="bg-transparent"
@@ -32,14 +32,14 @@ const HeaderOutline = () => {
             </SelectTrigger>
             <SelectContent className="bg-white">
               <SelectGroup>
-                <SelectItem value="apple"> All Cities(NGR)</SelectItem>
-                <SelectItem value="banana">Abu Dhabi</SelectItem>
-                <SelectItem value="blueberry">Dubai</SelectItem>
-                <SelectItem value="grapes">Sharjah</SelectItem>
-                <SelectItem value="pineapple">Ajman</SelectItem>
-                <SelectItem value="pineapple">UAQ</SelectItem>
-                <SelectItem value="pineapple">Ras AI-Khaimah</SelectItem>
-                <SelectItem value="pineapple">Fujairah</SelectItem>
+                <SelectItem className="hover:bg-gray-300" value="apple"> All Cities(NGR)</SelectItem>
+                <SelectItem className="hover:bg-gray-300" value="banana">Abu Dhabi</SelectItem>
+                <SelectItem className="hover:bg-gray-300" value="blueberry">Dubai</SelectItem>
+                <SelectItem className="hover:bg-gray-300" value="grapes">Sharjah</SelectItem>
+                <SelectItem className="hover:bg-gray-300" value="pineapple">Ajman</SelectItem>
+                <SelectItem className="hover:bg-gray-300" value="pineapple">UAQ</SelectItem>
+                <SelectItem className="hover:bg-gray-300" value="pineapple">Ras AI-Khaimah</SelectItem>
+                <SelectItem className="hover:bg-gray-300" value="pineapple">Fujairah</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>

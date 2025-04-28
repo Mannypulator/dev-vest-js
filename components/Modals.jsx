@@ -94,6 +94,7 @@ export function Modals() {
   const [weeklyRate, setWeeklyRate] = useState("");
   const [monthlyRate, setMonthlyRate] = useState("");
   const [nightlyRate, setNightlyRate] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setCountries(Country.getAllCountries());
@@ -244,6 +245,7 @@ export function Modals() {
   const handleAddPropertySubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
+    setLoading(true);
 
     // Debug FormData content
     console.log("Client-side FormData:");
@@ -284,6 +286,8 @@ export function Modals() {
         success: false,
         message: error.message || "Failed to add property",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -293,6 +297,7 @@ export function Modals() {
     <>
       {/* Other modals (login, signup, forgot-password, reset-password, success) */}
       <Dialog open={activeModal === "login"} onOpenChange={closeModal}>
+        {/* ======= Login Modal =========== */}
         <DialogContent className="bg-white w-[26rem] p-6 py-10 outline-0 border-none">
           <form action={signInAction}>
             <DialogHeader>
@@ -425,7 +430,8 @@ export function Modals() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={activeModal === "signup"} onOpenirimchange={closeModal}>
+      {/* ++++++++++++++++++ Register Modal ++++++++++++++++++++ */}
+      <Dialog open={activeModal === "signup"} onOpenChange={closeModal}>
         <DialogContent className="bg-white w-[26rem] p-6 py-10 outline-0 border-none">
           <form action={signUpAction}>
             <DialogHeader>
@@ -560,7 +566,7 @@ export function Modals() {
               <div className="flex flex-col justify-center items-center w-full">
                 <Button
                   disabled={pending}
-                  className="w-full font-semibold text-base text-white bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)]"
+                  className="w-full font-semibold text-base text-white bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)] cursor-pointer"
                 >
                   {pending ? "Signing Up..." : "Sign Up"}
                 </Button>
@@ -619,7 +625,7 @@ export function Modals() {
           <div>
             <Button
               onClick={() => openModal("reset-password")}
-              className="w-full font-semibold text-base text-white bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)]"
+              className="w-full font-semibold text-base text-white bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)] cursor-pointer"
             >
               Send
             </Button>
@@ -627,6 +633,7 @@ export function Modals() {
         </DialogContent>
       </Dialog>
 
+      {/* ******** Reset Password *********** */}
       <Dialog open={activeModal === "reset-password"} onOpenChange={closeModal}>
         <DialogContent className="bg-white w-[26rem] p-6 py-10 outline-0 border-none">
           <DialogHeader>
@@ -1147,12 +1154,21 @@ export function Modals() {
                 className="w-full bg-[#E6B027] text-white rounded-[5px]"
               >
                 {pending ? "Submitting..." : "Submit"}
+                {loading ? (
+                  <div className="flex justify-center items-center relative cursor-not-allowed">
+                    <div className="animate-spin rounded-full h-8 w-8 border-4 border-t-green-300 border-gray-200"></div>
+                  </div>
+                ) : (
+                  "Submit"
+                )}
               </Button>
-              {addPropertyState.message && (
-                <div className="text-center text-destructive">
-                  {addPropertyState.message}
-                </div>
-              )}
+              <div className="">
+                {addPropertyState.message && (
+                  <div className="text-center text-destructive">
+                    {addPropertyState.message}
+                  </div>
+                )}
+              </div>
             </DialogFooter>
           </form>
         </DialogContent>
