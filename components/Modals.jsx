@@ -13,7 +13,7 @@ import { Button } from "./ui/button";
 import { Poppins } from "next/font/google";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState, useRef, useActionState } from "react";
 import { Country, State } from "country-state-city";
 import {
   Select,
@@ -27,7 +27,6 @@ import { signIn } from "next-auth/react";
 import { useFormStatus } from "react-dom";
 import { assets } from "@/assets/assets";
 import signUpUser from "@/app/action/signUpUser";
-import addProperty from "@/app/action/addProperty";
 import getPropertyById from "@/app/action/getPropertyById";
 import editPropertyById from "@/app/action/editPropertyById";
 import { useModal } from "./ModelContext";
@@ -41,7 +40,6 @@ const poppins = Poppins({
 
 export function Modals() {
   const { activeModal, closeModal, openModal, modalData } = useModal();
-  console.log(modalData);
   const [signInData, signInAction] = useActionState(signInWithCredentials, {
     success: false,
     message: "",
@@ -52,12 +50,11 @@ export function Modals() {
     message: "",
   });
 
-  const [addPropertyData, addPropertyAction] = useActionState(addProperty, {
+  const [addPropertyState, setAddPropertyState] = useState({
     success: false,
     message: "",
   });
 
-  // get property by id and use the values to populate the form for edit-post
   const [property, setProperty] = useState(null);
 
   useEffect(() => {
@@ -81,57 +78,6 @@ export function Modals() {
     }
   );
 
-  useEffect(() => {
-    if (addPropertyData.success || editPropertyData.success) {
-      setListingTitle("");
-      setCategory("Apartment");
-      setCountry("");
-      setState("");
-      setCurrency("NGN");
-      setActualPrice("");
-      setDiscountPrice("");
-      setDescription("");
-      setSelectedImages([]);
-      setVideoPreview(null);
-      setVideoError(null);
-      setSelectedAmenities([]);
-
-      // Close the modal
-      closeModal();
-    }
-  }, [addPropertyData.success, editPropertyData.success, closeModal]);
-
-  const { pending } = useFormStatus();
-  const amenities = [
-    "wifi",
-    "Free Parking",
-    "24/7 Security",
-    "Dishwasher",
-    "Balcony/Patio",
-    "Full kitchen",
-    "Washer & Dryer",
-    "Swimming Pool",
-    "Wheelchair Accessible",
-    "Gym/Fitness Center",
-    "Smart TV",
-    "Coffee Maker",
-    "Air Conditioning",
-    "Elevator Access",
-    "Hot Tub",
-  ];
-
-  const categories = [
-    "Apartment",
-    "Condo",
-    "House",
-    "Cabin or Cottage",
-    "Room",
-    "Studio",
-    "Other",
-  ];
-
-  const currencies = ["NGN", "USD", "EUR", "GBP", "CAD"];
-
   const [listingTitle, setListingTitle] = useState("");
   const [category, setCategory] = useState("Apartment");
   const [type, setType] = useState("For Sale");
@@ -144,7 +90,10 @@ export function Modals() {
   const [discountPrice, setDiscountPrice] = useState("");
   const [description, setDescription] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
-  const [selectedAmenities, setSelectedAmenities] = useState(amenities);
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [weeklyRate, setWeeklyRate] = useState("");
+  const [monthlyRate, setMonthlyRate] = useState("");
+  const [nightlyRate, setNightlyRate] = useState("");
 
   useEffect(() => {
     setCountries(Country.getAllCountries());
@@ -163,7 +112,8 @@ export function Modals() {
   const [videoPreview, setVideoPreview] = useState(null);
   const [videoError, setVideoError] = useState(null);
 
-  // Handle Image Upload
+  const formRef = useRef(null);
+
   const handleImageUpload = (event) => {
     const files = event.target.files;
     if (!files) return;
@@ -173,7 +123,6 @@ export function Modals() {
     setSelectedImages((prev) => [...prev, ...newImages]);
   };
 
-  // Toggle Amenities
   const toggleAmenity = (amenity) => {
     setSelectedAmenities((prev) =>
       prev.includes(amenity)
@@ -186,20 +135,18 @@ export function Modals() {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file size (limit: 10MB)
     if (file.size > 50 * 1024 * 1024) {
       setVideoError("Video file must be less than 50MB.");
       return;
     }
 
-    // Validate file format
     const validFormats = [
       "video/mp4",
-      "video/quicktime", // covers .mov
-      "video/x-msvideo", // covers .avi
-      "video/x-matroska", // covers .mkv
-      "video/H265", // rarely used but included for completeness
-      "video/hevc", // HEVC explicit type (not widely supported in MIME checks)
+      "video/quicktime",
+      "video/x-msvideo",
+      "video/x-matroska",
+      "video/H265",
+      "video/hevc",
     ];
     if (!validFormats.includes(file.type)) {
       setVideoError("Invalid format. Allowed formats: MP4, MOV, AVI, MKV.");
@@ -235,11 +182,117 @@ export function Modals() {
     }
   };
 
+  const handleRateChange = (e, setRate) => {
+    const rawValue = e.target.value.replace(/,/g, "");
+    if (/^\d*$/.test(rawValue)) {
+      setRate(formatNumber(rawValue));
+    }
+  };
+
+  const amenities = [
+    "wifi",
+    "Free Parking",
+    "24/7 Security",
+    "Dishwasher",
+    "Balcony/Patio",
+    "Full kitchen",
+    "Washer & Dryer",
+    "Swimming Pool",
+    "Wheelchair Accessible",
+    "Gym/Fitness Center",
+    "Smart TV",
+    "Coffee Maker",
+    "Air Conditioning",
+    "Elevator Access",
+    "Hot Tub",
+  ];
+
+  const categories = [
+    "Apartment",
+    "Condo",
+    "House",
+    "Cabin or Cottage",
+    "Room",
+    "Studio",
+    "Other",
+  ];
+
+  const currencies = ["₦", "$", "€", "£", "CAD"];
+
+  useEffect(() => {
+    if (addPropertyState.success || editPropertyData.success) {
+      setListingTitle("");
+      setCategory("Apartment");
+      setType("For Sale");
+      setCountry("");
+      setState("");
+      setCurrency("NGN");
+      setActualPrice("");
+      setDiscountPrice("");
+      setDescription("");
+      setSelectedImages([]);
+      setVideoPreview(null);
+      setVideoError(null);
+      setSelectedAmenities([]);
+      setWeeklyRate("");
+      setMonthlyRate("");
+      setNightlyRate("");
+      closeModal();
+    }
+  }, [addPropertyState.success, editPropertyData.success, closeModal]);
+
+  const handleAddPropertySubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+
+    // Debug FormData content
+    console.log("Client-side FormData:");
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value instanceof File ? value.name : value);
+    }
+
+    // Validate rates for For Rent
+    if (
+      type === "For Rent" &&
+      !formData.get("rates.monthly") &&
+      !formData.get("rates.weekly") &&
+      !formData.get("rates.nightly")
+    ) {
+      setAddPropertyState({
+        success: false,
+        message:
+          "At least one rental rate (monthly, weekly, or nightly) is required for For Rent properties",
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/add-property", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      setAddPropertyState(result);
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to add property");
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      setAddPropertyState({
+        success: false,
+        message: error.message || "Failed to add property",
+      });
+    }
+  };
+
+  const { pending } = useFormStatus();
+
   return (
     <>
+      {/* Other modals (login, signup, forgot-password, reset-password, success) */}
       <Dialog open={activeModal === "login"} onOpenChange={closeModal}>
-
-        {/* ================ Login ================ */}
         <DialogContent className="bg-white w-[26rem] p-6 py-10 outline-0 border-none">
           <form action={signInAction}>
             <DialogHeader>
@@ -296,7 +349,7 @@ export function Modals() {
                     Email*
                   </Label>
                   <Input
-                    type="text"
+                    type="email"
                     id="email"
                     name="email"
                     required
@@ -311,11 +364,11 @@ export function Modals() {
                     Password*
                   </Label>
                   <Input
-                    type="text"
+                    type="password"
                     id="password"
                     name="password"
                     required
-                    autoComplete="password"
+                    autoComplete="current-password"
                     defaultValue={signInDefaultValues.password}
                     placeholder="Enter your password"
                     className="w-full px-4 py-2 border border-border-gray-100 rounded-[5px] placeholder:text-text-secondary placeholder:text-xs placeholder:font-normal"
@@ -346,7 +399,7 @@ export function Modals() {
                   disabled={pending}
                   className="w-full bg-primary font-semibold text-base text-white"
                 >
-                  {pending ? "Loging In..." : "Log In"}
+                  {pending ? "Logging In..." : "Log In"}
                 </Button>
                 {signInData && !signInData.success && (
                   <div className="text-center text-destructive">
@@ -354,7 +407,7 @@ export function Modals() {
                   </div>
                 )}
                 <div className="text-center text-xs font-bold mt-4">
-                  Don&apos;t have an account?{" "}
+                  Don't have an account?{" "}
                   <span
                     onClick={() => openModal("signup")}
                     className="font-bold text-primary text-xs cursor-pointer border-none outline-none"
@@ -364,7 +417,7 @@ export function Modals() {
                 </div>
                 <p className="mt-6 text-xs">
                   By continuing, you agree to the Terms of Service
-                  <br /> and acknowledge you&apos;ve read our Privacy Policy.
+                  <br /> and acknowledge you've read our Privacy Policy.
                 </p>
               </div>
             </DialogFooter>
@@ -372,8 +425,7 @@ export function Modals() {
         </DialogContent>
       </Dialog>
 
-      {/* ------------------ Register modal ------------------- */}
-      <Dialog open={activeModal === "signup"} onOpenChange={closeModal}>
+      <Dialog open={activeModal === "signup"} onOpenirimchange={closeModal}>
         <DialogContent className="bg-white w-[26rem] p-6 py-10 outline-0 border-none">
           <form action={signUpAction}>
             <DialogHeader>
@@ -414,7 +466,7 @@ export function Modals() {
                 >
                   <Image
                     src={assets.google}
-                    alt="facebook logo"
+                    alt="Google logo"
                     height={15}
                     width={15}
                   />
@@ -436,7 +488,7 @@ export function Modals() {
                   <Input
                     id="firstName"
                     name="firstName"
-                    autoComplete="firstName"
+                    autoComplete="given-name"
                     required
                     type="text"
                     placeholder="Enter your first name"
@@ -451,7 +503,7 @@ export function Modals() {
                     id="lastName"
                     name="lastName"
                     type="text"
-                    autoComplete="lastName"
+                    autoComplete="family-name"
                     required
                     placeholder="Enter your last name"
                     className="w-full px-4 py-2 border border-[#EAECF0] rounded-[5px] placeholder:text-[#9F9C9C] placeholder:text-xs placeholder:font-normal"
@@ -477,10 +529,10 @@ export function Modals() {
                   Phone Number*
                 </Label>
                 <Input
-                  type="phone"
+                  type="tel"
                   id="phoneNumber"
                   name="phoneNumber"
-                  autoComplete="phoneNumber"
+                  autoComplete="tel"
                   required
                   placeholder="Enter your phone number"
                   className="w-full px-4 py-2 border border-[#EAECF0] rounded-[5px] placeholder:text-[#9F9C9C] placeholder:text-xs placeholder:font-normal"
@@ -494,7 +546,7 @@ export function Modals() {
                   type="password"
                   id="password"
                   name="password"
-                  autoComplete="password"
+                  autoComplete="new-password"
                   required
                   placeholder="Enter your password"
                   className="w-full px-4 py-2 border border-[#EAECF0] rounded-[5px] placeholder:text-[#9F9C9C] placeholder:text-xs placeholder:font-normal"
@@ -528,13 +580,14 @@ export function Modals() {
                 </div>
                 <p className="mt-6 text-xs">
                   By continuing, you agree to the Terms of Service
-                  <br /> and acknowledge you&apos;ve read our Privacy Policy.
+                  <br /> and acknowledge you've read our Privacy Policy.
                 </p>
               </div>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
+
       <Dialog
         open={activeModal === "forgot-password"}
         onOpenChange={closeModal}
@@ -558,6 +611,7 @@ export function Modals() {
             <Label className="text-xs font-normal text-[#0A0A0B]">Email*</Label>
             <Input
               type="email"
+              name="email"
               placeholder="Enter your email"
               className="w-full px-4 py-2 border border-[#EAECF0] rounded-[5px] placeholder:text-[#9F9C9C] placeholder:text-xs placeholder:font-normal"
             />
@@ -565,13 +619,14 @@ export function Modals() {
           <div>
             <Button
               onClick={() => openModal("reset-password")}
-              className="w-full bg-yellow-600 font-semibold text-base text-white bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)]"
+              className="w-full font-semibold text-base text-white bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)]"
             >
               Send
             </Button>
           </div>
         </DialogContent>
       </Dialog>
+
       <Dialog open={activeModal === "reset-password"} onOpenChange={closeModal}>
         <DialogContent className="bg-white w-[26rem] p-6 py-10 outline-0 border-none">
           <DialogHeader>
@@ -593,8 +648,9 @@ export function Modals() {
               Enter new password*
             </Label>
             <Input
-              type="email"
-              placeholder="Enter your email"
+              type="password"
+              name="password"
+              placeholder="Enter new password"
               className="w-full px-4 py-2 border border-[#EAECF0] rounded-[5px] placeholder:text-[#9F9C9C] placeholder:text-xs placeholder:font-normal"
             />
           </div>
@@ -603,15 +659,16 @@ export function Modals() {
               Confirm password*
             </Label>
             <Input
-              type="email"
-              placeholder="Enter your email"
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm new password"
               className="w-full px-4 py-2 border border-[#EAECF0] rounded-[5px] placeholder:text-[#9F9C9C] placeholder:text-xs placeholder:font-normal"
             />
           </div>
           <div>
             <Button
               onClick={() => openModal("success")}
-              className="w-full bg-yellow-600 font-semibold text-base text-white bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)]"
+              className="w-full font-semibold text-base text-white bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)]"
             >
               Submit
             </Button>
@@ -630,7 +687,7 @@ export function Modals() {
               width={67}
             />
           </DialogHeader>
-          <DialogTitle className="text-center sm: text-sm lg:text-2xl font-bold lg:mb-4">
+          <DialogTitle className="text-center sm:text-sm lg:text-2xl font-bold lg:mb-4">
             Email sent, Check your inbox!
           </DialogTitle>
           <DialogDescription className="text-center text-xs text-gray-500">
@@ -639,6 +696,7 @@ export function Modals() {
           </DialogDescription>
         </DialogContent>
       </Dialog>
+
       <Dialog open={activeModal === "add-post"} onOpenChange={closeModal}>
         <DialogContent className="bg-white lg:w-full lg:max-w-xl max-h-[90vh] overflow-y-auto p-6 lg:rounded-[8px] lg:shadow-lg outline-none border-none">
           <DialogHeader>
@@ -647,110 +705,138 @@ export function Modals() {
             </DialogTitle>
           </DialogHeader>
 
-          {/* Form */}
           <form
-            action={addPropertyAction}
+            ref={formRef}
+            onSubmit={handleAddPropertySubmit}
+            encType="multipart/form-data"
             className={`${poppins.className} mt-4 space-y-4`}
           >
-            {/* Listing Title */}
             <div>
-              <Label>Listing Name</Label>
+              <Label className="pb-2">Listing Name</Label>
               <Input
                 type="text"
                 id="listingTitle"
                 name="listingTitle"
                 placeholder="Write a descriptive title"
                 className="w-full rounded-[5px] placeholder:text-[#C4C4C4] placeholder:text-xs"
-                defaultValue={listingTitle}
+                value={listingTitle}
                 onChange={(e) => setListingTitle(e.target.value)}
                 required
               />
             </div>
 
-            {/* add a select for user to pick for sale or for rent */}
-            <div>
-              <Label>Select Type</Label>
-              <Select
-                name="type"
-                onValueChange={(value) => setType(value)}
-                defaultValue={type}
-              >
-                <SelectTrigger className="w-full border rounded-[5px]">
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent className="bg-white rounded-[5px]">
-                  <SelectItem value="For Sale">For Sale</SelectItem>
-                  <SelectItem value="For Rent">For Rent</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            {/* Dropdowns */}
-            <div>
-              <Label>Select Category</Label>
-              <Select
-                name="category"
-                onValueChange={(value) => setCategory(value)}
-                defaultValue={category}
-              >
-                <SelectTrigger className="w-full border rounded-[5px]">
-                  <SelectValue placeholder="Apartment" />
-                </SelectTrigger>
-                <SelectContent className="bg-white rounded-[5px]">
-                  {categories.map((cat) => (
-                    <SelectItem className="bg-white" key={cat} value={cat}>
-                      {cat}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Country Input Field */}
-            <div>
-              <Label>Country</Label>
-              <Select
-                name="country"
-                onValueChange={(val) => setCountry(val)}
-                value={country}
-              >
-                <SelectTrigger className="w-full border rounded-[5px]">
-                  <SelectValue placeholder="Select country" />
-                </SelectTrigger>
-                <SelectContent className="bg-white rounded-[5px] max-h-64 overflow-y-auto">
-                  {countries.map((c) => (
-                    <SelectItem key={c.isoCode} value={c.name}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="flex items-center justify-center px-5 gap-20">
+              <div>
+                <Label>Select Type</Label>
+                <Select
+                  name="type"
+                  onValueChange={(value) => setType(value)}
+                  defaultValue={type}
+                >
+                  <SelectTrigger className="w-full border rounded-[5px]">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white rounded-[5px]">
+                    <SelectItem value="For Sale">For Sale</SelectItem>
+                    <SelectItem value="For Rent">For Rent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Select Category</Label>
+                <Select
+                  name="category"
+                  onValueChange={(value) => setCategory(value)}
+                  defaultValue={category}
+                >
+                  <SelectTrigger className="w-full border rounded-[5px]">
+                    <SelectValue placeholder="Apartment" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white rounded-[5px]">
+                    {categories.map((cat) => (
+                      <SelectItem className="bg-white" key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            {/* State/Province */}
-            <div>
-              <Label>State</Label>
-              <Select
-                name="state"
-                onValueChange={(val) => setState(val)}
-                value={state}
-                disabled={!states.length}
-              >
-                <SelectTrigger className="w-full border rounded-[5px]">
-                  <SelectValue placeholder="Select state" />
-                </SelectTrigger>
-                <SelectContent className="bg-white rounded-[5px] max-h-64 overflow-y-auto">
-                  {states.map((s) => (
-                    <SelectItem key={s.isoCode} value={s.name}>
-                      {s.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="flex items-center justify-between py-5 px-5 gap-20">
+              <div>
+                <Label>Country</Label>
+                <Select
+                  name="country"
+                  onValueChange={(val) => setCountry(val)}
+                  value={country}
+                >
+                  <SelectTrigger className="w-full border rounded-[5px]">
+                    <SelectValue placeholder="Select country" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white rounded-[5px] max-h-64 overflow-y-auto">
+                    {countries.map((c) => (
+                      <SelectItem key={c.isoCode} value={c.name}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>State</Label>
+                <Select
+                  name="state"
+                  onValueChange={(val) => setState(val)}
+                  value={state}
+                  disabled={!states.length}
+                >
+                  <SelectTrigger className="w-full border rounded-[5px]">
+                    <SelectValue placeholder="Select state" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white rounded-[5px] max-h-64 overflow-y-auto">
+                    {states.map((s) => (
+                      <SelectItem key={s.isoCode} value={s.name}>
+                        {s.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            {/* Prices & Currency */}
+            <div>
+              <Label>Street Address</Label>
+              <Input
+                type="text"
+                name="street"
+                placeholder="Enter street address"
+                className="w-full rounded-[5px] placeholder:text-[#C4C4C4] placeholder:text-xs"
+                required
+              />
+            </div>
+            <div>
+              <Label>City</Label>
+              <Input
+                type="text"
+                name="city"
+                placeholder="Enter city"
+                className="w-full rounded-[5px] placeholder:text-[#C4C4C4] placeholder:text-xs"
+                required
+              />
+            </div>
+            <div>
+              <Label>Zipcode</Label>
+              <Input
+                type="text"
+                name="zipcode"
+                placeholder="Enter zipcode"
+                className="w-full rounded-[5px] placeholder:text-[#C4C4C4] placeholder:text-xs"
+                required
+              />
+            </div>
+
             <div className="grid grid-cols-10 gap-4">
-              {/* Currency Dropdown */}
               <div className="col-span-2">
                 <br />
                 <Select
@@ -759,7 +845,7 @@ export function Modals() {
                   defaultValue={currency}
                 >
                   <SelectTrigger className="border rounded-[5px]">
-                    <SelectValue placeholder="NGN" />
+                    <SelectValue placeholder="₦" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
                     {currencies.map((cur) => (
@@ -770,13 +856,11 @@ export function Modals() {
                   </SelectContent>
                 </Select>
               </div>
-
-              {/* Actual Price */}
               <div className="col-span-4">
                 <Label className={`${poppins.className}`}>Actual Price</Label>
                 <Input
                   name="actualPrice"
-                  className="placeholder:text-[#C4C4C4] placeholder:text-xs rounded-[5px]"
+                  className="placeholder:text-[#C4C4C4] placeholder:text-xs rounded-[5px] mt-2"
                   type="text"
                   placeholder="Enter price"
                   value={actualPrice}
@@ -784,13 +868,11 @@ export function Modals() {
                   required
                 />
               </div>
-
-              {/* Discount Price */}
               <div className="col-span-4">
                 <Label>Discount Price</Label>
                 <Input
                   name="discountPrice"
-                  className="placeholder:text-[#C4C4C4] placeholder:text-xs rounded-[5px]"
+                  className="placeholder:text-[#C4C4C4] placeholder:text-xs rounded-[5px] mt-2"
                   type="text"
                   placeholder="Enter discount price"
                   value={discountPrice}
@@ -800,18 +882,18 @@ export function Modals() {
               </div>
             </div>
 
-            {/* Description */}
             <div>
               <Label>Description</Label>
               <textarea
                 name="description"
                 placeholder="Type a detailed description of the listing"
-                className="w-full border p-2 h-24 placeholder:text-[#C4C4C4] placeholder:text-xs rounded-[5px]"
-                defaultValue={description}
+                className="w-full border p-2 h-24 placeholder:text-[#C4C4C4] placeholder:text-xs rounded-[5px] my-2"
+                value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
               ></textarea>
             </div>
+
             <div className="mb-4 flex flex-wrap">
               <div className="w-full sm:w-1/3 pr-2">
                 <Label
@@ -863,7 +945,7 @@ export function Modals() {
             {type === "For Rent" && (
               <div className="mb-4 bg-blue-50 p-4">
                 <Label className="block text-gray-700 font-bold mb-2">
-                  Rates
+                  Rates (at least one required)
                 </Label>
                 <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
                   <div className="flex items-center">
@@ -871,10 +953,12 @@ export function Modals() {
                       Weekly
                     </Label>
                     <Input
-                      type="number"
+                      type="text"
                       id="weekly_rate"
                       name="rates.weekly"
                       className="border rounded w-full py-2 px-3"
+                      value={weeklyRate}
+                      onChange={(e) => handleRateChange(e, setWeeklyRate)}
                     />
                   </div>
                   <div className="flex items-center">
@@ -882,10 +966,12 @@ export function Modals() {
                       Monthly
                     </Label>
                     <Input
-                      type="number"
+                      type="text"
                       id="monthly_rate"
                       name="rates.monthly"
                       className="border rounded w-full py-2 px-3"
+                      value={monthlyRate}
+                      onChange={(e) => handleRateChange(e, setMonthlyRate)}
                     />
                   </div>
                   <div className="flex items-center">
@@ -893,15 +979,18 @@ export function Modals() {
                       Nightly
                     </Label>
                     <Input
-                      type="number"
+                      type="text"
                       id="nightly_rate"
                       name="rates.nightly"
                       className="border rounded w-full py-2 px-3"
+                      value={nightlyRate}
+                      onChange={(e) => handleRateChange(e, setNightlyRate)}
                     />
                   </div>
                 </div>
               </div>
             )}
+
             <div className="mb-4">
               <Label
                 htmlFor="seller_name"
@@ -912,7 +1001,7 @@ export function Modals() {
               <Input
                 type="text"
                 id="seller_name"
-                name="seller_info.name."
+                name="seller_info.name"
                 className="border rounded w-full py-2 px-3"
                 placeholder="Name"
               />
@@ -949,7 +1038,6 @@ export function Modals() {
               />
             </div>
 
-            {/* Upload Photos */}
             <div>
               <Label>Upload Photos</Label>
               <div className="flex gap-3 mt-2 flex-wrap">
@@ -990,20 +1078,20 @@ export function Modals() {
                 ))}
               </div>
             </div>
+
             <div>
               <Label>Upload Video</Label>
               <div className="flex gap-3 mt-2 flex-wrap">
-                <Label className="w-20 h-20 bg-[#F8E8BF] flex items-center justify-center cursor-pointer border-none outline-none rounded-[15px]">
+                <label className="w-20 h-20 bg-[#F8E8BF] flex items-center justify-center cursor-pointer border-none outline-none rounded-[15px]">
                   +
-                  <Input
+                  <input
                     name="video"
                     type="file"
                     className="hidden"
-                    accept="video/mp4, video/mov, video/avi, video/mkv"
+                    accept="video/mp4,video/mov,video/avi,video/mkv"
                     onChange={handleVideoUpload}
                   />
-                </Label>
-
+                </label>
                 {videoPreview && (
                   <div className="relative w-40 h-24">
                     <video className="w-full h-full rounded-[15px]" controls>
@@ -1019,13 +1107,10 @@ export function Modals() {
                   </div>
                 )}
               </div>
-
               {videoError && (
                 <p className="text-red-500 text-xs mt-2">{videoError}</p>
               )}
             </div>
-
-            {/* Amenities */}
 
             <div>
               <Label className="font-medium text-gray-700">Amenities:</Label>
@@ -1047,23 +1132,27 @@ export function Modals() {
                     >
                       {amenity}
                     </Label>
-
                     {selectedAmenities.includes(amenity) && (
-                      <input type="hidden" name="amenities" value={amenity} />
+                      <input type="hidden" name="amenities[]" value={amenity} />
                     )}
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Submit Button */}
             <DialogFooter>
               <Button
+                type="submit"
                 disabled={pending}
                 className="w-full bg-[#E6B027] text-white rounded-[5px]"
               >
-                Submit
+                {pending ? "Submitting..." : "Submit"}
               </Button>
+              {addPropertyState.message && (
+                <div className="text-center text-destructive">
+                  {addPropertyState.message}
+                </div>
+              )}
             </DialogFooter>
           </form>
         </DialogContent>

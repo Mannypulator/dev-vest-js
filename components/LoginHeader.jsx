@@ -65,7 +65,7 @@ const LoginHeader = () => {
           </span>
         </div>
         <DropdownMenu>
-          <DropdownMenuTrigger className="border-none bg-white outline-none rounded-full">
+          <DropdownMenuTrigger className="border-none bg-white outline-none rounded-full cursor-pointer">
             <div className="flex items-center space-x-2 bg-white rounded-full p-2">
               <Image
                 src={session?.user?.image || assets.default_profile}
@@ -113,7 +113,7 @@ const LoginHeader = () => {
           </DropdownMenuContent>
         </DropdownMenu>
         <Button
-          className="bg-[#E6B027] text-white py-2 px-6 rounded-[5px]"
+          className="bg-[#E6B027] text-white py-2 px-6 rounded-[5px] cursor-pointer"
           onClick={() => openModal("add-post")}
         >
           + Post

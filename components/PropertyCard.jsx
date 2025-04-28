@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import Image from "next/image";
 import { Bed, Bath, Ruler, MapPin, Banknote } from "lucide-react";
 import Link from "next/link";
+import { assets } from "@/assets/assets";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -11,31 +12,37 @@ const poppins = Poppins({
 
 const PropertyCard = ({ property }) => {
   const getRatesDisplayed = () => {
+    const currency = property.currency || "$"; // Default to $ if currency not stored
+    // For Sale: Use price if valid
     if (
       property.isForSale &&
       typeof property.price === "number" &&
       property.price > 0
     ) {
-      return `$${property.price.toLocaleString()}`;
+      return `${currency}${property.price.toLocaleString()}`;
     }
-    if (property.rates) {
+    // For Rent: Prioritize rates, fall back to price
+    if (!property.isForSale) {
       if (
-        typeof property.rates.monthly === "number" &&
+        typeof property.rates?.monthly === "number" &&
         property.rates.monthly > 0
       ) {
-        return `$${property.rates.monthly.toLocaleString()}/mo`;
+        return `${currency}${property.rates.monthly.toLocaleString()}/mo`;
       }
       if (
-        typeof property.rates.weekly === "number" &&
+        typeof property.rates?.weekly === "number" &&
         property.rates.weekly > 0
       ) {
-        return `$${property.rates.weekly.toLocaleString()}/wk`;
+        return `${currency}${property.rates.weekly.toLocaleString()}/wk`;
       }
       if (
-        typeof property.rates.nightly === "number" &&
+        typeof property.rates?.nightly === "number" &&
         property.rates.nightly > 0
       ) {
-        return `$${property.rates.nightly.toLocaleString()}/night`;
+        return `${currency}${property.rates.nightly.toLocaleString()}/night`;
+      }
+      if (typeof property.price === "number" && property.price > 0) {
+        return `${currency}${property.price.toLocaleString()}/mo`; // Assume monthly
       }
     }
     return "Price unavailable";
@@ -48,12 +55,12 @@ const PropertyCard = ({ property }) => {
           src={
             property.images && property.images[0]
               ? property.images[0]
-              : "/images/placeholder.jpg"
+              : assets.property1
           }
           alt=""
           height={0}
           width={0}
-          sizes="100vw"
+          sizes="(max-width: 768px) 100vw, 33vw"
           className="w-full h-auto rounded-t-xl"
           priority={true}
         />
@@ -75,7 +82,7 @@ const PropertyCard = ({ property }) => {
           </p>
           <p>
             <Bath className="md:hidden lg:inline mr-2" size={16} />
-            {property.baths}
+            {property.beds}
             <span className="md:hidden lg:inline"> Baths</span>
           </p>
           <p>

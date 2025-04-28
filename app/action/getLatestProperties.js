@@ -17,6 +17,17 @@ async function getLatestProperties(limit = 4) {
       return { success: false, error: "No properties found" };
     }
 
+    console.log(
+      "Fetched properties:",
+      properties.map((p) => ({
+        _id: p._id,
+        type: p.type,
+        isForSale: p.isForSale,
+        price: p.price,
+        rates: p.rates,
+      }))
+    );
+
     return { success: true, properties };
   } catch (error) {
     console.error("Error fetching latest properties:", error);

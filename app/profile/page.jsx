@@ -1,9 +1,9 @@
-import { auth } from "@/auth";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getPropertiesByUser } from "../action/getPropertiesByUser";
 import { assets } from "@/assets/assets";
 import ProfileProperties from "@/components/ProfileProperties";
+import { auth } from "../auth";
 
 const ProfilePage = async () => {
   const session = await auth();

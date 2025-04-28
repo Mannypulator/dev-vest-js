@@ -8,7 +8,7 @@ import { Modals } from "@/components/Modals";
 import Header from "@/components/Header";
 import HeaderOutline from "@/components/HeaderOutline";
 import Footer from "@/components/Footer";
-import { ToastContainer, Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({
   subsets: ["latin"],

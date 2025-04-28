@@ -67,18 +67,26 @@ export const authOptions = {
       }
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
-        token.id = user.id;
-        token.firstName = user.firstName;
-        token.lastName = user.lastName;
+        await connectDB();
+        const dbUser = await User.findOne({ email: user.email });
+        if (dbUser) {
+          token.id = dbUser._id.toString();
+          token.firstName = dbUser.firstName;
+          token.lastName = dbUser.lastName;
+        } else {
+          token.id = user.id; // Fallback for new users
+        }
       }
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.id;
-      session.user.firstName = token.firstName;
-      session.user.lastName = token.lastName;
+      if (token.id) {
+        session.user.id = token.id;
+        session.user.firstName = token.firstName;
+        session.user.lastName = token.lastName;
+      }
       return session;
     },
   },
