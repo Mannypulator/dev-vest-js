@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { ChevronDown, Globe } from "lucide-react";
-import { Poppins } from "next/font/google";
+import { Poppins, Outfit } from "next/font/google";
 import { assets } from "@/assets/assets";
 
 const poppins = Poppins({
@@ -9,19 +9,24 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
+const outfit = Outfit({
+  weight: "300",
+  subsets: ["latin"],
+});
+
 const Footer = () => {
   return (
     <footer
-      className={`${poppins.className} bg-[linear-gradient(219.84deg,_var(--text-primary)_4.14%,_var(--text-secondary)_44.22%)] text-white mt-8`}
+      className={`${outfit.className} bg-[linear-gradient(219.84deg,_var(--text-primary)_4.14%,_var(--text-secondary)_44.22%)] text-white mt-10`}
     >
-      <div className="container mx-auto py-8 px-2 sm:px-4">
+      <div className="container mx-auto py-6 px-5 sm:px-10 md:px-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 font-normal text-lg text-center md:text-left">
-          <div className="flex flex-col items-center md:items-start">
+          <div className="flex flex-col items-center md:items-start justify-between">
             <Image
               className="mb-6"
               src={assets.logo}
-              width={60}
-              height={60}
+              width={50}
+              height={50}
               alt="drive vest logo"
               priority={true}
             />
@@ -34,13 +39,13 @@ const Footer = () => {
                 <ChevronDown color="#e9e7e7" />
               </li>
             </ul>
-            <ul className="flex items-center justify-center md:justify-start space-x-2">
+            <ul className="flex items-center justify-center md:justify-start gap-4 mt-2">
               <li>
                 <Image
                   className="mb-6"
                   src={assets.facebook_logo}
-                  width={25}
-                  height={25}
+                  width={20}
+                  height={20}
                   alt="facebook logo"
                   priority={true}
                 />
@@ -49,8 +54,8 @@ const Footer = () => {
                 <Image
                   className="mb-6"
                   src={assets.x_logo}
-                  width={30}
-                  height={30}
+                  width={20}
+                  height={20}
                   alt="x logo"
                   priority={true}
                 />
@@ -59,8 +64,8 @@ const Footer = () => {
                 <Image
                   className="mb-6"
                   src={assets.skype_logo}
-                  width={30}
-                  height={30}
+                  width={20}
+                  height={20}
                   alt="skype logo"
                   priority={true}
                 />
@@ -69,8 +74,8 @@ const Footer = () => {
                 <Image
                   className="mb-6"
                   src={assets.instagram_logo}
-                  width={30}
-                  height={30}
+                  width={20}
+                  height={20}
                   alt="instagram logo"
                   priority={true}
                 />
@@ -79,8 +84,8 @@ const Footer = () => {
                 <Image
                   className="mb-6"
                   src={assets.linkedin_logo}
-                  width={30}
-                  height={30}
+                  width={20}
+                  height={20}
                   alt="linkedin logo"
                   priority={true}
                 />
