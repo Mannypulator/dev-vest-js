@@ -14,6 +14,8 @@ import property3 from "./images/property3.svg";
 import property4 from "./images/property4.svg";
 import skype_logo from "./images/skype-logo.svg";
 import x_logo from "./images/x-logo.svg";
+import eye_icon from "./images/eye.svg";
+import eye_slash_icon from "./images/eye_slash.svg";
 
 export const assets = {
   check,
@@ -32,4 +34,6 @@ export const assets = {
   property4,
   skype_logo,
   x_logo,
+  eye_icon,
+  eye_slash_icon,
 };

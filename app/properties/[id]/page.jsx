@@ -11,7 +11,10 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
 });
 
-export default async function PropertyDetailPage({ params }) {
+export default async function PropertyDetailPage({ params: paramsPromise }) {
+  // Await params to resolve the Promise
+  const params = await paramsPromise;
+
   await connectDB();
 
   // Check for valid params.id
