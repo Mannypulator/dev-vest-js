@@ -393,25 +393,37 @@ export function Modals() {
       return;
     }
 
-    try {
-      const response = await axios.post("/api/edit-property", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      toast.success(response.data.message);
-      setEditPropertyState({
-        success: true,
-        message: response.data.message,
-      });
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.error || "Failed to update property";
-      toast.error(errorMessage);
-      setEditPropertyState({
-        success: false,
-        message: errorMessage,
-      });
-    } finally {
-      setLoading(false);
+    const maxRetries = 3;
+    let attempt = 0;
+
+    while (attempt < maxRetries) {
+      try {
+        const response = await axios.post("/api/edit-property", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+          timeout: 30000,
+        });
+        toast.success(response.data.message);
+        setEditPropertyState({
+          success: true,
+          message: response.data.message,
+        });
+        return;
+      } catch (error) {
+        attempt++;
+        const errorMessage =
+          error.response?.data?.error || "Failed to update property";
+        console.error(`Attempt ${attempt} failed:`, errorMessage);
+        if (attempt === maxRetries) {
+          setEditPropertyState({
+            success: false,
+            message: errorMessage,
+          });
+          toast.error(errorMessage);
+          setLoading(false);
+          return;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
     }
   };
 
@@ -1031,7 +1043,7 @@ export function Modals() {
             </div>
             <div className="flex items-center justify-center px-5 gap-20">
               <div>
-                <Label>Select Type</Label>
+                <Label className="py-1">Select Type</Label>
                 <Select
                   name="type"
                   onValueChange={(value) => setType(value)}
@@ -1047,7 +1059,7 @@ export function Modals() {
                 </Select>
               </div>
               <div>
-                <Label>Select Category</Label>
+                <Label className="py-1">Select Category</Label>
                 <Select
                   name="category"
                   onValueChange={(value) => setCategory(value)}
@@ -1068,7 +1080,7 @@ export function Modals() {
             </div>
             <div className="flex items-center justify-between py-5 px-5 gap-20">
               <div>
-                <Label>Country</Label>
+                <Label className="py-1">Country</Label>
                 <Select
                   name="country"
                   onValueChange={(val) => setCountry(val)}
@@ -1087,7 +1099,7 @@ export function Modals() {
                 </Select>
               </div>
               <div>
-                <Label>State</Label>
+                <Label className="py-1">State</Label>
                 <Select
                   name="state"
                   onValueChange={(val) => setState(val)}
@@ -1108,7 +1120,7 @@ export function Modals() {
               </div>
             </div>
             <div>
-              <Label>Street Address</Label>
+              <Label className="py-1">Street Address</Label>
               <Input
                 type="text"
                 name="street"
@@ -1119,29 +1131,31 @@ export function Modals() {
                 required
               />
             </div>
-            <div>
-              <Label>City</Label>
-              <Input
-                type="text"
-                name="city"
-                placeholder="Enter city"
-                className="w-full rounded-[5px] placeholder:text-[#C4C4C4] placeholder:text-xs"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <Label>Zipcode</Label>
-              <Input
-                type="text"
-                name="zipcode"
-                placeholder="Enter zipcode"
-                className="w-full rounded-[5px] placeholder:text-[#C4C4C4] placeholder:text-xs"
-                value={zipcode}
-                onChange={(e) => setZipcode(e.target.value)}
-                required
-              />
+            <div className="flex gap-8">
+              <div>
+                <Label className="py-1">City</Label>
+                <Input
+                  type="text"
+                  name="city"
+                  placeholder="Enter city"
+                  className="w-full rounded-[5px] placeholder:text-[#C4C4C4] placeholder:text-xs"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <Label className="py-1">Zipcode</Label>
+                <Input
+                  type="text"
+                  name="zipcode"
+                  placeholder="Enter zipcode"
+                  className="w-full rounded-[5px] placeholder:text-[#C4C4C4] placeholder:text-xs"
+                  value={zipcode}
+                  onChange={(e) => setZipcode(e.target.value)}
+                  required
+                />
+              </div>
             </div>
             <div className="grid grid-cols-10 gap-4">
               <div className="col-span-2">
@@ -1638,7 +1652,7 @@ export function Modals() {
                 </Select>
               </div>
               <div className="col-span-4">
-                <Label className={`${poppins.className}`}>Actual Price</Label>
+                <Label className={`${poppins.className}`}>Discount Price</Label>
                 <Input
                   name="actualPrice"
                   className="placeholder:text-[#C4C4C4] placeholder:text-xs rounded-[5px] mt-2"
@@ -1650,7 +1664,7 @@ export function Modals() {
                 />
               </div>
               <div className="col-span-4">
-                <Label>Discount Price</Label>
+                <Label>Actual Price</Label>
                 <Input
                   name="discountPrice"
                   className="placeholder:text-[#C4C4C4] placeholder:text-xs rounded-[5px] mt-2"

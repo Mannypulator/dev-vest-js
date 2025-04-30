@@ -37,7 +37,7 @@ const PropertyListings = async ({ title = true, seeAllLink = true }) => {
         )}
       </div>
       {success ? (
-        properties.length > 0 ? (
+        Array.isArray(properties) && properties.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {properties.map((property) => (
               <PropertyCard key={property._id} property={property} />
@@ -50,7 +50,7 @@ const PropertyListings = async ({ title = true, seeAllLink = true }) => {
         )
       ) : (
         <div className="text-red-500 bg-red-100 p-4 rounded-lg text-center">
-          {error}
+          {error || "An unexpected error occurred"}
         </div>
       )}
     </section>

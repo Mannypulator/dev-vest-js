@@ -32,14 +32,14 @@ const LogoutHeader = () => {
       <div className="md:space-x-4 space-x-2">
         <Button
           onClick={() => openModal("signup")}
-          className={`${poppins.className} py-0 text-xs sm:text-sm md:text-base md:py-2 px-2 md:px-6 bg-[#E6B027] text-white rounded-lg`}
+          className={`${poppins.className} py-0 text-xs sm:text-sm md:text-base md:py-2 px-2 md:px-6 bg-[#E6B027] text-white rounded-lg cursor-pointer`}
         >
           Register
         </Button>
 
         <Button
           onClick={() => openModal("login")}
-          className={`${poppins.className} py-0 text-xs sm:text-sm md:text-base md:py-2 px-2 md:px-6 border bg-transparent border-[#E6B027] text-[#E6B027] rounded-lg`}
+          className={`${poppins.className} py-0 text-xs sm:text-sm md:text-base md:py-2 px-2 md:px-6 border bg-transparent border-[#E6B027] text-[#E6B027] rounded-lg cursor-pointer`}
         >
           Log In
         </Button>

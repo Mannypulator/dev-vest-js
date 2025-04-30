@@ -114,6 +114,7 @@ export async function POST(request) {
         street: formData.get("street"),
         city: formData.get("city"),
         state: formData.get("state"),
+        country: formData.get("country"),
         zipcode: formData.get("zipcode"),
       },
       beds: parseInt(formData.get("beds"), 10),

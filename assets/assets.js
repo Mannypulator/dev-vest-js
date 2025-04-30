@@ -16,6 +16,8 @@ import skype_logo from "./images/skype-logo.svg";
 import x_logo from "./images/x-logo.svg";
 import eye_icon from "./images/eye.svg";
 import eye_slash_icon from "./images/eye_slash.svg";
+import mail_icon from "./images/mail_icon.svg";
+import person_icon from "./images/person_icon.svg";
 
 export const assets = {
   check,
@@ -36,4 +38,6 @@ export const assets = {
   x_logo,
   eye_icon,
   eye_slash_icon,
+  mail_icon,
+  person_icon,
 };

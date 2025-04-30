@@ -1,38 +1,33 @@
-"use server";
-
 import connectDB from "@/config/database";
 import Property from "@/models/Property";
+import { convertToSerializeableObject } from "@/utils/convertToObject";
 
-async function getLatestProperties(limit = 4) {
-  await connectDB();
-
+export default async function getLatestProperties(limit) {
   try {
-    const properties = await Property.find({})
-      .sort({ createdAt: -1 })
+    await connectDB();
+
+    // Fetch properties with lean() to get plain objects
+    const properties = await Property.find()
+      .sort({ createdAt: -1 }) // Sort by newest first
       .limit(limit)
-      .populate("owner", "firstName lastName email")
       .lean();
 
-    if (!properties || properties.length === 0) {
-      return { success: false, error: "No properties found" };
-    }
-
-    console.log(
-      "Fetched properties:",
-      properties.map((p) => ({
-        _id: p._id,
-        type: p.type,
-        isForSale: p.isForSale,
-        price: p.price,
-        rates: p.rates,
-      }))
+    // Serialize all properties
+    const serializedProperties = properties.map((property) =>
+      convertToSerializeableObject(property)
     );
 
-    return { success: true, properties };
+    return {
+      success: true,
+      properties: serializedProperties,
+      error: null,
+    };
   } catch (error) {
-    console.error("Error fetching latest properties:", error);
-    return { error: "An error occurred while fetching properties" };
+    console.error("Error fetching properties:", error);
+    return {
+      success: false,
+      properties: [],
+      error: "Failed to fetch properties",
+    };
   }
 }
-
-export default getLatestProperties;
