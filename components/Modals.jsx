@@ -896,7 +896,7 @@ export function Modals() {
         </DialogContent>
       </Dialog>
 
-      {/* Forgot Password Modal */}
+      {/* &&&&&&&&&&&&&&&&& Forgot Password Modal &&&&&&&&&&&&&&&&&&&&&&& */}
       <Dialog
         open={activeModal === "forgot-password"}
         onOpenChange={closeModal}
@@ -939,7 +939,7 @@ export function Modals() {
         </DialogContent>
       </Dialog>
 
-      {/* Reset Password Modal */}
+      {/* $$$$$$$$$$$$$$$$$$$$$$$$$ Reset Password Modal $$$$$$$$$$$$$$$$$$$$$$$$$$ */}
       <Dialog open={activeModal === "reset-password"} onOpenChange={closeModal}>
         <DialogContent className="bg-white w-[26rem] p-6 py-10 outline-0 border-none">
           <DialogHeader>
@@ -1014,9 +1014,9 @@ export function Modals() {
         </DialogContent>
       </Dialog>
 
-      {/* Add Post Modal */}
+      {/* +++++++++++++++++++++++++ Add Post Modal ++++++++++++++++++++++++++++ */}
       <Dialog open={activeModal === "add-post"} onOpenChange={closeModal}>
-        <DialogContent className="bg-white lg:w-full lg:max-w-xl max-h-[90vh] overflow-y-auto p-6 lg:rounded-[8px] lg:shadow-lg outline-none border-none">
+        <DialogContent className="bg-white flex flex-col text-xs sm:text-base items-center w-full lg:max-w-xl max-h-[90vh] overflow-y-auto sm:p-6 lg:rounded-[8px] lg:shadow-lg outline-none border-none">
           <DialogHeader>
             <DialogTitle className="text-center text-2xl font-bold">
               New Post
@@ -1028,7 +1028,7 @@ export function Modals() {
             encType="multipart/form-data"
             className={`${poppins.className} mt-4 space-y-4`}
           >
-            <div>
+            <div className="flex flex-col w-full">
               <Label className="pb-2">Listing Name</Label>
               <Input
                 type="text"
@@ -1041,7 +1041,7 @@ export function Modals() {
                 required
               />
             </div>
-            <div className="flex items-center justify-center px-5 gap-20">
+            <div className="flex items-center justify-center md:px-5 md:gap-20">
               <div>
                 <Label className="py-1">Select Type</Label>
                 <Select
@@ -1078,7 +1078,7 @@ export function Modals() {
                 </Select>
               </div>
             </div>
-            <div className="flex items-center justify-between py-5 px-5 gap-20">
+            <div className="flex items-center justify-between py-5 md:px-5 md:gap-20">
               <div>
                 <Label className="py-1">Country</Label>
                 <Select
@@ -1157,7 +1157,7 @@ export function Modals() {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-10 gap-4">
+            <div className="grid grid-cols-10 md:gap-4">
               <div className="col-span-2">
                 <br />
                 <Select
@@ -1206,14 +1206,14 @@ export function Modals() {
               <textarea
                 name="description"
                 placeholder="Type a detailed description of the listing"
-                className="w-full border p-2 h-24 placeholder:text-[#C4C4C4] placeholder:text-xs rounded-[5px] my-2"
+                className="w-full border md:p-2 h-24 placeholder:text-[#C4C4C4] placeholder:text-xs rounded-[5px] my-2"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
               ></textarea>
             </div>
-            <div className="mb-4 flex flex-wrap">
-              <div className="w-full sm:w-1/3 pr-2">
+            <div className="mb-4 flex flex-row gap-2">
+              <div className="w-full sm:w-1/3 md:pr-2">
                 <Label
                   htmlFor="beds"
                   className="block text-gray-700 font-bold mb-2"
@@ -1224,13 +1224,13 @@ export function Modals() {
                   type="number"
                   id="beds"
                   name="beds"
-                  className="border rounded w-full py-2 px-3"
+                  className="border rounded w-full py-2 md:px-3"
                   value={beds}
                   onChange={(e) => setBeds(e.target.value)}
                   required
                 />
               </div>
-              <div className="w-full sm:w-1/3 px-2">
+              <div className="w-full sm:w-1/3 md:px-2">
                 <Label
                   htmlFor="baths"
                   className="block text-gray-700 font-bold mb-2"
@@ -1241,13 +1241,13 @@ export function Modals() {
                   type="number"
                   id="baths"
                   name="baths"
-                  className="border rounded w-full py-2 px-3"
+                  className="border rounded w-full py-2 md:px-3"
                   value={baths}
                   onChange={(e) => setBaths(e.target.value)}
                   required
                 />
               </div>
-              <div className="w-full sm:w-1/3 pl-2">
+              <div className="w-full sm:w-1/3 md:pl-2">
                 <Label
                   htmlFor="square_feet"
                   className="block text-gray-700 font-bold mb-2"
@@ -1258,7 +1258,7 @@ export function Modals() {
                   type="number"
                   id="square_feet"
                   name="square_feet"
-                  className="border rounded w-full py-2 px-3"
+                  className="border rounded w-full py-2 md:px-3"
                   value={squareFeet}
                   onChange={(e) => setSquareFeet(e.target.value)}
                   required
@@ -1266,46 +1266,46 @@ export function Modals() {
               </div>
             </div>
             {type === "For Rent" && (
-              <div className="mb-4 bg-blue-50 p-4">
+              <div className="mb-4 bg-blue-50 md:p-4">
                 <Label className="block text-gray-700 font-bold mb-2">
                   Rates (at least one required)
                 </Label>
                 <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
                   <div className="flex items-center">
-                    <Label htmlFor="weekly_rate" className="mr-2">
+                    <Label htmlFor="weekly_rate" className="md:mr-2">
                       Weekly
                     </Label>
                     <Input
                       type="text"
                       id="weekly_rate"
                       name="rates.weekly"
-                      className="border rounded w-full py-2 px-3"
+                      className="border rounded w-full py-2 md:px-3"
                       value={weeklyRate}
                       onChange={(e) => handleRateChange(e, setWeeklyRate)}
                     />
                   </div>
                   <div className="flex items-center">
-                    <Label htmlFor="monthly_rate" className="mr-2">
+                    <Label htmlFor="monthly_rate" className="md:mr-2">
                       Monthly
                     </Label>
                     <Input
                       type="text"
                       id="monthly_rate"
                       name="rates.monthly"
-                      className="border rounded w-full py-2 px-3"
+                      className="border rounded w-full py-2 md:px-3"
                       value={monthlyRate}
                       onChange={(e) => handleRateChange(e, setMonthlyRate)}
                     />
                   </div>
                   <div className="flex items-center">
-                    <Label htmlFor="nightly_rate" className="mr-2">
+                    <Label htmlFor="nightly_rate" className="md:mr-2">
                       Nightly
                     </Label>
                     <Input
                       type="text"
                       id="nightly_rate"
                       name="rates.nightly"
-                      className="border rounded w-full py-2 px-3"
+                      className="border rounded w-full py-2 md:px-3"
                       value={nightlyRate}
                       onChange={(e) => handleRateChange(e, setNightlyRate)}
                     />
@@ -1324,7 +1324,7 @@ export function Modals() {
                 type="text"
                 id="seller_name"
                 name="seller_info.name"
-                className="border rounded w-full py-2 px-3"
+                className="border rounded w-full py-2 md:px-3"
                 placeholder="Name"
                 value={sellerName}
                 onChange={(e) => setSellerName(e.target.value)}
@@ -1341,7 +1341,7 @@ export function Modals() {
                 type="email"
                 id="seller_email"
                 name="seller_info.email"
-                className="border rounded w-full py-2 px-3"
+                className="border rounded w-full py-2 md:px-3"
                 placeholder="Email address"
                 value={sellerEmail}
                 onChange={(e) => setSellerEmail(e.target.value)}
@@ -1359,7 +1359,7 @@ export function Modals() {
                 type="tel"
                 id="seller_phone"
                 name="seller_info.phone"
-                className="border rounded w-full py-2 px-3"
+                className="border rounded w-full py-2 md:px-3"
                 placeholder="Phone"
                 value={sellerPhone}
                 onChange={(e) => setSellerPhone(e.target.value)}
@@ -1441,7 +1441,7 @@ export function Modals() {
             </div>
             <div>
               <Label className="font-medium text-gray-700">Amenities:</Label>
-              <div className="grid grid-cols-2 gap-4 mt-2">
+              <div className="grid sm:grid-cols-2 sm:gap-4 gap-2 mt-2">
                 {amenities.map((amenity, index) => (
                   <div
                     key={`amenity-${index}`}
@@ -1455,7 +1455,7 @@ export function Modals() {
                     />
                     <Label
                       htmlFor={`amenity-${index}`}
-                      className="text-gray-600 text-sm cursor-pointer"
+                      className="text-gray-600 sm:text-sm text-xs cursor-pointer"
                     >
                       {amenity}
                     </Label>
@@ -1470,7 +1470,7 @@ export function Modals() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#E6B027] text-white rounded-[5px]"
+                className="flex items-center justify-center bg-[#E6B027] text-white rounded-[5px]"
               >
                 {loading ? "Submitting..." : "Submit"}
               </Button>
@@ -1491,478 +1491,6 @@ export function Modals() {
       </Dialog>
 
       {/* Edit Post Modal */}
-      <Dialog open={activeModal === "edit-post"} onOpenChange={closeModal}>
-        <DialogContent className="bg-white lg:w-full lg:max-w-xl max-h-[90vh] overflow-y-auto p-6 lg:rounded-[8px] lg:shadow-lg outline-none border-none">
-          <DialogHeader>
-            <DialogTitle className="text-center text-2xl font-bold">
-              Edit Property
-            </DialogTitle>
-          </DialogHeader>
-          <form
-            ref={formRef}
-            onSubmit={handleEditPropertySubmit}
-            encType="multipart/form-data"
-            className={`${poppins.className} mt-4 space-y-4`}
-          >
-            <div>
-              <Label className="pb-2">Listing Name</Label>
-              <Input
-                type="text"
-                id="listingTitle"
-                name="listingTitle"
-                placeholder="Write a descriptive title"
-                className="w-full rounded-[5px] placeholder:text-[#C4C4C4] placeholder:text-xs"
-                value={listingTitle}
-                onChange={(e) => setListingTitle(e.target.value)}
-                required
-              />
-            </div>
-            <div className="flex items-center justify-center px-5 gap-20">
-              <div>
-                <Label>Select Type</Label>
-                <Select
-                  name="type"
-                  onValueChange={(value) => setType(value)}
-                  value={type}
-                >
-                  <SelectTrigger className="w-full border rounded-[5px]">
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white rounded-[5px]">
-                    <SelectItem value="For Sale">For Sale</SelectItem>
-                    <SelectItem value="For Rent">For Rent</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Select Category</Label>
-                <Select
-                  name="category"
-                  onValueChange={(value) => setCategory(value)}
-                  value={category}
-                >
-                  <SelectTrigger className="w-full border rounded-[5px]">
-                    <SelectValue placeholder="Apartment" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white rounded-[5px]">
-                    {categories.map((cat) => (
-                      <SelectItem className="bg-white" key={cat} value={cat}>
-                        {cat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="flex items-center justify-between py-5 px-5 gap-20">
-              <div>
-                <Label>Country</Label>
-                <Select
-                  name="country"
-                  onValueChange={(val) => setCountry(val)}
-                  value={country}
-                >
-                  <SelectTrigger className="w-full border rounded-[5px]">
-                    <SelectValue placeholder="Select country" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white rounded-[5px] max-h-64 overflow-y-auto">
-                    {countries.map((c) => (
-                      <SelectItem key={c.isoCode} value={c.name}>
-                        {c.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>State</Label>
-                <Select
-                  name="state"
-                  onValueChange={(val) => setState(val)}
-                  value={state}
-                  disabled={!states.length}
-                >
-                  <SelectTrigger className="w-full border rounded-[5px]">
-                    <SelectValue placeholder="Select state" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white rounded-[5px] max-h-64 overflow-y-auto">
-                    {states.map((s) => (
-                      <SelectItem key={s.isoCode} value={s.name}>
-                        {s.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div>
-              <Label>Street Address</Label>
-              <Input
-                type="text"
-                name="street"
-                placeholder="Enter street address"
-                className="w-full rounded-[5px] placeholder:text-[#C4C4C4] placeholder:text-xs"
-                value={street}
-                onChange={(e) => setStreet(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <Label>City</Label>
-              <Input
-                type="text"
-                name="city"
-                placeholder="Enter city"
-                className="w-full rounded-[5px] placeholder:text-[#C4C4C4] placeholder:text-xs"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <Label>Zipcode</Label>
-              <Input
-                type="text"
-                name="zipcode"
-                placeholder="Enter zipcode"
-                className="w-full rounded-[5px] placeholder:text-[#C4C4C4] placeholder:text-xs"
-                value={zipcode}
-                onChange={(e) => setZipcode(e.target.value)}
-                required
-              />
-            </div>
-            <div className="grid grid-cols-10 gap-4">
-              <div className="col-span-2">
-                <br />
-                <Select
-                  name="currency"
-                  onValueChange={(value) => setCurrency(value)}
-                  value={currency}
-                >
-                  <SelectTrigger className="border rounded-[5px]">
-                    <SelectValue placeholder="₦" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    {currencies.map((cur) => (
-                      <SelectItem className="bg-white" key={cur} value={cur}>
-                        {cur}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="col-span-4">
-                <Label className={`${poppins.className}`}>Discount Price</Label>
-                <Input
-                  name="actualPrice"
-                  className="placeholder:text-[#C4C4C4] placeholder:text-xs rounded-[5px] mt-2"
-                  type="text"
-                  placeholder="Enter price"
-                  value={actualPrice}
-                  onChange={handleActualPriceChange}
-                  required
-                />
-              </div>
-              <div className="col-span-4">
-                <Label>Actual Price</Label>
-                <Input
-                  name="discountPrice"
-                  className="placeholder:text-[#C4C4C4] placeholder:text-xs rounded-[5px] mt-2"
-                  type="text"
-                  placeholder="Enter discount price"
-                  value={discountPrice}
-                  onChange={handleDiscountPriceChange}
-                />
-              </div>
-            </div>
-            <div>
-              <Label>Description</Label>
-              <textarea
-                name="description"
-                placeholder="Type a detailed description of the listing"
-                className="w-full border p-2 h-24 placeholder:text-[#C4C4C4] placeholder:text-xs rounded-[5px] my-2"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-              ></textarea>
-            </div>
-            <div className="mb-4 flex flex-wrap">
-              <div className="w-full sm:w-1/3 pr-2">
-                <Label
-                  htmlFor="beds"
-                  className="block text-gray-700 font-bold mb-2"
-                >
-                  Beds
-                </Label>
-                <Input
-                  type="number"
-                  id="beds"
-                  name="beds"
-                  className="border rounded w-full py-2 px-3"
-                  value={beds}
-                  onChange={(e) => setBeds(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="w-full sm:w-1/3 px-2">
-                <Label
-                  htmlFor="baths"
-                  className="block text-gray-700 font-bold mb-2"
-                >
-                  Baths
-                </Label>
-                <Input
-                  type="number"
-                  id="baths"
-                  name="baths"
-                  className="border rounded w-full py-2 px-3"
-                  value={baths}
-                  onChange={(e) => setBaths(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="w-full sm:w-1/3 pl-2">
-                <Label
-                  htmlFor="square_feet"
-                  className="block text-gray-700 font-bold mb-2"
-                >
-                  Square Feet
-                </Label>
-                <Input
-                  type="number"
-                  id="square_feet"
-                  name="square_feet"
-                  className="border rounded w-full py-2 px-3"
-                  value={squareFeet}
-                  onChange={(e) => setSquareFeet(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-            {type === "For Rent" && (
-              <div className="mb-4 bg-blue-50 p-4">
-                <Label className="block text-gray-700 font-bold mb-2">
-                  Rates (at least one required)
-                </Label>
-                <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-                  <div className="flex items-center">
-                    <Label htmlFor="weekly_rate" className="mr-2">
-                      Weekly
-                    </Label>
-                    <Input
-                      type="text"
-                      id="weekly_rate"
-                      name="rates.weekly"
-                      className="border rounded w-full py-2 px-3"
-                      value={weeklyRate}
-                      onChange={(e) => handleRateChange(e, setWeeklyRate)}
-                    />
-                  </div>
-                  <div className="flex items-center">
-                    <Label htmlFor="monthly_rate" className="mr-2">
-                      Monthly
-                    </Label>
-                    <Input
-                      type="text"
-                      id="monthly_rate"
-                      name="rates.monthly"
-                      className="border rounded w-full py-2 px-3"
-                      value={monthlyRate}
-                      onChange={(e) => handleRateChange(e, setMonthlyRate)}
-                    />
-                  </div>
-                  <div className="flex items-center">
-                    <Label htmlFor="nightly_rate" className="mr-2">
-                      Nightly
-                    </Label>
-                    <Input
-                      type="text"
-                      id="nightly_rate"
-                      name="rates.nightly"
-                      className="border rounded w-full py-2 px-3"
-                      value={nightlyRate}
-                      onChange={(e) => handleRateChange(e, setNightlyRate)}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-            <div className="mb-4">
-              <Label
-                htmlFor="seller_name"
-                className="block text-gray-700 font-bold mb-2"
-              >
-                Seller Name
-              </Label>
-              <Input
-                type="text"
-                id="seller_name"
-                name="seller_info.name"
-                className="border rounded w-full py-2 px-3"
-                placeholder="Name"
-                value={sellerName}
-                onChange={(e) => setSellerName(e.target.value)}
-              />
-            </div>
-            <div className="mb-4">
-              <Label
-                htmlFor="seller_email"
-                className="block text-gray-700 font-bold mb-2"
-              >
-                Seller Email
-              </Label>
-              <Input
-                type="email"
-                id="seller_email"
-                name="seller_info.email"
-                className="border rounded w-full py-2 px-3"
-                placeholder="Email address"
-                value={sellerEmail}
-                onChange={(e) => setSellerEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <Label
-                htmlFor="seller_phone"
-                className="block text-gray-700 font-bold mb-2"
-              >
-                Seller Phone
-              </Label>
-              <Input
-                type="tel"
-                id="seller_phone"
-                name="seller_info.phone"
-                className="border rounded w-full py-2 px-3"
-                placeholder="Phone"
-                value={sellerPhone}
-                onChange={(e) => setSellerPhone(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>Upload Photos</Label>
-              <div className="flex gap-3 mt-2 flex-wrap">
-                <label className="w-20 h-20 bg-[#F8E8BF] flex items-center justify-center cursor-pointer border-none outline-none rounded-[15px]">
-                  +
-                  <input
-                    name="images"
-                    type="file"
-                    className="hidden"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                  />
-                </label>
-                {selectedImages.map((image, index) => (
-                  <div
-                    key={`image-${index}`}
-                    className="relative w-20 h-20 max-h-20"
-                  >
-                    <Image
-                      src={image}
-                      alt="Uploaded"
-                      className="w-full h-full object-cover rounded-[15px]"
-                      width={80}
-                      height={80}
-                    />
-                    <Button
-                      type="button"
-                      className="absolute top-0 right-0 bg-white border border-[#B6B6B6] text-black rounded-full w-4 h-4 text-xs flex items-center justify-center"
-                      onClick={() =>
-                        setSelectedImages((prev) =>
-                          prev.filter((_, i) => i !== index)
-                        )
-                      }
-                    >
-                      ✖
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <Label>Upload Video</Label>
-              <div className="flex gap-3 mt-2 flex-wrap">
-                <label className="w-20 h-20 bg-[#F8E8BF] flex items-center justify-center cursor-pointer border-none outline-none rounded-[15px]">
-                  +
-                  <input
-                    name="video"
-                    type="file"
-                    className="hidden"
-                    accept="video/mp4,video/mov,video/avi,video/mkv"
-                    onChange={handleVideoUpload}
-                  />
-                </label>
-                {videoPreview && (
-                  <div className="relative w-40 h-24">
-                    <video className="w-full h-full rounded-[15px]" controls>
-                      <source src={videoPreview} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                    <Button
-                      type="button"
-                      className="absolute top-0 right-0 bg-white border border-[#B6B6B6] text-black rounded-full w-4 h-4 text-xs flex items-center justify-center"
-                      onClick={removeVideo}
-                    >
-                      ✖
-                    </Button>
-                  </div>
-                )}
-              </div>
-              {videoError && (
-                <p className="text-red-500 text-xs mt-2">{videoError}</p>
-              )}
-            </div>
-            <div>
-              <Label className="font-medium text-gray-700">Amenities:</Label>
-              <div className="grid grid-cols-2 gap-4 mt-2">
-                {amenities.map((amenity, index) => (
-                  <div
-                    key={`amenity-${index}`}
-                    className="flex items-center gap-2.5"
-                  >
-                    <Checkbox
-                      id={`amenity-${index}`}
-                      checked={selectedAmenities.includes(amenity)}
-                      onCheckedChange={() => toggleAmenity(amenity)}
-                      className="w-6 h-6 p-1 border border-[#E3E3E3] rounded-[3px] shadow-lg shadow-black/25"
-                    />
-                    <Label
-                      htmlFor={`amenity-${index}`}
-                      className="text-gray-600 text-sm cursor-pointer"
-                    >
-                      {amenity}
-                    </Label>
-                    {selectedAmenities.includes(amenity) && (
-                      <input type="hidden" name="amenities[]" value={amenity} />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-[#E6B027] text-white rounded-[5px]"
-              >
-                {loading ? "Updating..." : "Update"}
-              </Button>
-              {editPropertyState.message && (
-                <div
-                  className={`text-center ${
-                    editPropertyState.success
-                      ? "text-green-500"
-                      : "text-destructive"
-                  }`}
-                >
-                  {editPropertyState.message}
-                </div>
-              )}
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
