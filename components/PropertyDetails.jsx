@@ -18,12 +18,6 @@ import { formatPrice, currencyDisplayMap } from "@/utils/currency";
 const PropertyDetails = ({ property }) => {
   const [mainImage, setMainImage] = useState(null);
 
-  // Map ISO 4217 codes to display symbols
-  
-
-  // Format price
-  
-
   // Guard clause for missing property
   if (!property) {
     return (
@@ -32,6 +26,37 @@ const PropertyDetails = ({ property }) => {
       </div>
     );
   }
+
+  // Default values for missing fields
+  const safeProperty = {
+    name: property.name || "Unnamed Property",
+    type: property.type || "Unknown",
+    images: Array.isArray(property.images) ? property.images : [],
+    location: {
+      street: property.location?.street || "",
+      city: property.location?.city || "",
+      state: property.location?.state || "",
+    },
+    price: property.price || 0,
+    currency: property.currency || "USD",
+    discount: property.discount || null,
+    rates: {
+      nightly: property.rates?.nightly || null,
+      weekly: property.rates?.weekly || null,
+      monthly: property.rates?.monthly || null,
+    },
+    owner: {
+      firstName: property.owner?.firstName || "Unknown",
+      lastName: property.owner?.lastName || "",
+      email: property.owner?.email || "N/A",
+    },
+    beds: property.beds || 0,
+    baths: property.baths || 0,
+    square_feet: property.square_feet || 0,
+    description: property.description || "No description available",
+    amenities: Array.isArray(property.amenities) ? property.amenities : [],
+    videoUrl: property.videoUrl || null,
+  };
 
   return (
     <main>
@@ -45,16 +70,18 @@ const PropertyDetails = ({ property }) => {
           Properties
         </Link>
         <span className="text-[#E6B027]">›</span>
-        <span className="text-[#E6B027] font-semibold">{property.name}</span>
+        <span className="text-[#E6B027] font-semibold">
+          {safeProperty.name}
+        </span>
       </div>
 
       {/* Image Section */}
       <div className="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
-        {property.images && property.images.length > 0 ? (
+        {safeProperty.images.length > 0 ? (
           <div className="flex flex-col md:flex-row sm:gap-4 gap-2 sm:p-6 p-2">
             {/* Secondary Images (Left, Vertical) */}
             <div className="flex md:flex-col flex-row sm:gap-2 gap-1 md:w-1/4">
-              {property.images.map((image, index) => (
+              {safeProperty.images.map((image, index) => (
                 <div
                   key={`secondary-image-${index}`}
                   onClick={() => setMainImage(image)}
@@ -62,7 +89,7 @@ const PropertyDetails = ({ property }) => {
                 >
                   <Image
                     src={image}
-                    alt={`${property.name} image ${index + 1}`}
+                    alt={`${safeProperty.name} image ${index + 1}`}
                     height={20}
                     width={40}
                     sizes="150px"
@@ -74,8 +101,8 @@ const PropertyDetails = ({ property }) => {
             {/* Main Image (Right, Larger) */}
             <div className="w-full md:w-3/4 rounded-lg overflow-hidden bg-gray-500/10">
               <Image
-                src={mainImage || property.images[0]}
-                alt={property.name || "Property"}
+                src={mainImage || safeProperty.images[0]}
+                alt={safeProperty.name}
                 height={100}
                 width={200}
                 sizes="(max-width: 768px) 100vw, 800px"
@@ -100,13 +127,13 @@ const PropertyDetails = ({ property }) => {
 
       {/* Property Info */}
       <div className="bg-white sm:p-6 p-2 rounded-lg shadow-md text-center md:text-left">
-        <div className="text-gray-500 mb-4">{property.type}</div>
-        <h1 className="text-3xl font-bold mb-4">{property.name}</h1>
+        <div className="text-gray-500 mb-4">{safeProperty.type}</div>
+        <h1 className="text-3xl font-bold mb-4">{safeProperty.name}</h1>
         <div className="text-gray-500 mb-4 flex align-middle justify-center md:justify-start">
           <MapMarker className="text-[#E6B027] mt-1 mr-1" />
           <p className="text-[#E6B027]">
-            {property.location?.street}, {property.location?.city},{" "}
-            {property.location?.state}
+            {safeProperty.location.street}, {safeProperty.location.city},{" "}
+            {safeProperty.location.state}
           </p>
         </div>
 
@@ -114,10 +141,10 @@ const PropertyDetails = ({ property }) => {
         <div className="flex flex-col md:flex-row items-center justify-center mb-4 border-b border-gray-200 md:border-b-0 pb-4 md:pb-0">
           <div className="text-gray-600 mr-2 font-bold">Price</div>
           <div className="md:text-2xl sm:text-lg text-base flex flex-col sm:flex-row items-center gap-2 font-bold text-[#E6B027]">
-            <div>{formatPrice(property.price, property.currency)}</div>
-            {property.discount && (
+            <div>{formatPrice(safeProperty.price, safeProperty.currency)}</div>
+            {safeProperty.discount && (
               <div className="text-gray-600 line-through md:text-lg sm:text-base text-xs">
-                {formatPrice(property.discount, property.currency)}
+                {formatPrice(safeProperty.discount, safeProperty.currency)}
               </div>
             )}
           </div>
@@ -131,8 +158,8 @@ const PropertyDetails = ({ property }) => {
           <div className="flex items-center justify-center mb-4 border-b border-gray-200 md:border-b-0 pb-4 md:pb-0">
             <div className="text-gray-600 mr-2 font-bold">Nightly</div>
             <div className="text-2xl font-bold text-[#E6B027]">
-              {property.rates?.nightly ? (
-                formatPrice(property.rates.nightly, property.currency)
+              {safeProperty.rates.nightly ? (
+                formatPrice(safeProperty.rates.nightly, safeProperty.currency)
               ) : (
                 <Times className="text-red-500" />
               )}
@@ -142,8 +169,8 @@ const PropertyDetails = ({ property }) => {
           <div className="flex items-center justify-center mb-4 border-b border-gray-200 md:border-b-0 pb-4 md:pb-0">
             <div className="text-gray-600 mr-2 font-bold">Weekly</div>
             <div className="text-2xl font-bold text-[#E6B027]">
-              {property.rates?.weekly ? (
-                formatPrice(property.rates.weekly, property.currency)
+              {safeProperty.rates.weekly ? (
+                formatPrice(safeProperty.rates.weekly, safeProperty.currency)
               ) : (
                 <Times className="text-red-500" />
               )}
@@ -153,8 +180,8 @@ const PropertyDetails = ({ property }) => {
           <div className="flex items-center justify-center mb-4 pb-4 md:pb-0">
             <div className="text-gray-600 mr-2 font-bold">Monthly</div>
             <div className="text-2xl font-bold text-[#E6B027]">
-              {property.rates?.monthly ? (
-                formatPrice(property.rates.monthly, property.currency)
+              {safeProperty.rates.monthly ? (
+                formatPrice(safeProperty.rates.monthly, safeProperty.currency)
               ) : (
                 <Times className="text-red-500" />
               )}
@@ -168,12 +195,12 @@ const PropertyDetails = ({ property }) => {
           <div className="flex items-center gap-2 text-gray-600">
             <Image src={assets.person_icon} alt="person icon" />
             <p>
-              {property.owner?.firstName} {property.owner?.lastName}
+              {safeProperty.owner.firstName} {safeProperty.owner.lastName}
             </p>
           </div>
           <div className="flex items-center gap-2 text-gray-600">
             <Image src={assets.mail_icon} alt="mail icon" />
-            <p>{property.owner?.email}</p>
+            <p>{safeProperty.owner.email}</p>
           </div>
         </div>
       </div>
@@ -184,26 +211,26 @@ const PropertyDetails = ({ property }) => {
         <div className="flex justify-center gap-4 text-gray-600 mb-4 text-xl space-x-9">
           <p>
             <Bed color="#E6B027" className="inline-block mr-2" />
-            {property.beds} <span className="hidden sm:inline">Beds</span>
+            {safeProperty.beds} <span className="hidden sm:inline">Beds</span>
           </p>
           <p>
             <Bath color="#E6B027" className="inline-block mr-2" />
-            {property.baths} <span className="hidden sm:inline">Baths</span>
+            {safeProperty.baths} <span className="hidden sm:inline">Baths</span>
           </p>
           <p>
             <Ruler color="#E6B027" className="inline-block mr-2" />
-            {property.square_feet}{" "}
+            {safeProperty.square_feet}{" "}
             <span className="hidden sm:inline">sqft</span>
           </p>
         </div>
-        <p className="text-gray-600 mb-4">{property.description}</p>
+        <p className="text-gray-600 mb-4">{safeProperty.description}</p>
       </div>
 
       {/* Amenities */}
       <div className="bg-white p-6 rounded-lg shadow-md mt-6">
         <h3 className="text-lg font-bold mb-6">Amenities</h3>
         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 list-none space-y-2">
-          {property.amenities?.map((amenity, index) => (
+          {safeProperty.amenities.map((amenity, index) => (
             <li key={index}>
               <Check className="inline-block text-green-600 mr-2" /> {amenity}
             </li>
@@ -214,13 +241,13 @@ const PropertyDetails = ({ property }) => {
       {/* Video Tour */}
       <div className="bg-white p-6 rounded-lg shadow-md mt-6">
         <h3 className="text-lg font-bold mb-6">Property Tour</h3>
-        {property.videoUrl ? (
+        {safeProperty.videoUrl ? (
           <video
             className="w-full rounded-lg"
             controls
-            poster={property.images?.[0]}
+            poster={safeProperty.images[0] || assets.property1}
           >
-            <source src={property.videoUrl} type="video/mp4" />
+            <source src={safeProperty.videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         ) : (

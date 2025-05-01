@@ -1,3 +1,4 @@
+// utils/currency.js
 export const currencyDisplayMap = {
   NGN: "₦",
   USD: "$",
