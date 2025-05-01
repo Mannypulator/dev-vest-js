@@ -20,7 +20,7 @@ const Footer = () => {
       className={`${outfit.className} bg-[linear-gradient(219.84deg,_var(--text-primary)_4.14%,_var(--text-secondary)_44.22%)] text-white mt-10`}
     >
       <div className="container mx-auto py-6 px-5 sm:px-10 md:px-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 font-normal text-lg text-center md:text-left">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_3fr_1fr] lg:grid-cols-[1fr_1fr_2fr_1fr] lg:gap-8 md:gap-4 font-normal text-lg text-center md:text-left">
           <div className="flex flex-col items-center md:items-start justify-between">
             <Image
               className="mb-6"
@@ -101,29 +101,31 @@ const Footer = () => {
               <li>Privacy Policy</li>
             </ul>
           </div>
-          <div>
-            <h3 className="text-lg font-bold mb-2">Nigeria</h3>
-            <ul className="space-y-1 text-sm">
-              <li>Lagos</li>
-              <li>Abuja</li>
-              <li>Port-harcourt</li>
-              <li>Ibadan</li>
-              <li>Delta</li>
-              <li>Kano</li>
-              <li>Anambra</li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-lg font-bold mb-2">Other Countries</h3>
-            <ul className="space-y-1 text-sm">
-              <li>Egypt</li>
-              <li>Saudi Arabia</li>
-              <li>Qatar</li>
-              <li>Kuwait</li>
-              <li>Lebanon</li>
-              <li>Bahrain</li>
-              <li>Oman</li>
-            </ul>
+          <div className="flex justify-between py-4 sm:py-0 sm:px-4 sm:gap-4">
+            <div>
+              <h3 className="text-lg font-bold mb-2">Nigeria</h3>
+              <ul className="space-y-1 text-sm">
+                <li>Lagos</li>
+                <li>Abuja</li>
+                <li>Port-harcourt</li>
+                <li>Ibadan</li>
+                <li>Delta</li>
+                <li>Kano</li>
+                <li>Anambra</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold mb-2">Other Countries</h3>
+              <ul className="space-y-1 text-sm">
+                <li>Egypt</li>
+                <li>Saudi Arabia</li>
+                <li>Qatar</li>
+                <li>Kuwait</li>
+                <li>Lebanon</li>
+                <li>Bahrain</li>
+                <li>Oman</li>
+              </ul>
+            </div>
           </div>
           <div>
             <h3 className="text-lg font-bold mb-2">Support</h3>

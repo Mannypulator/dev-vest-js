@@ -556,7 +556,7 @@ export function Modals() {
               >
                 Log In
               </DialogTitle>
-              <div className="flex max-w-1/2 gap-8 items-center mx-auto justify-center">
+              <div className="flex max-w-1/2 sm:gap-8 gap-4 items-center mx-auto justify-center">
                 <Button
                   type="button"
                   onClick={() => signIn("facebook")}
@@ -568,7 +568,7 @@ export function Modals() {
                     height={15}
                     width={15}
                   />
-                  <p className="hidden sm:block">Continue with Facebook</p>
+                  <p className="hidden sm:block">Continue with </p><p className="p-0">Facebook</p>
                 </Button>
                 <Button
                   type="button"
@@ -581,7 +581,7 @@ export function Modals() {
                     height={15}
                     width={15}
                   />
-                  <p className="hidden sm:block">Continue with Google</p>
+                  <p className="hidden sm:block">Continue with </p><p className="p-0">Google</p>
                 </Button>
               </div>
               <div className="text-center flex my-4 text-sm font-semibold items-center justify-center space-x-2">
@@ -716,7 +716,7 @@ export function Modals() {
               <DialogDescription className="text-center text-xs text-gray-500 py-2">
                 Full access to any of our products
               </DialogDescription>
-              <div className="flex max-w-1/2 gap-8 items-center mx-auto justify-center">
+              <div className="flex max-w-1/2 sm:gap-8 gap-4 items-center mx-auto justify-center">
                 <Button
                   type="button"
                   onClick={() => signIn("facebook")}
@@ -729,7 +729,7 @@ export function Modals() {
                     width={15}
                     priority={true}
                   />
-                  <p className="hidden sm:block">Sign up with Facebook</p>
+                  <p className="hidden sm:block">Sign up with </p><p>Facebook</p>
                 </Button>
                 <Button
                   type="button"
@@ -742,7 +742,7 @@ export function Modals() {
                     height={15}
                     width={15}
                   />
-                  <p className="hidden sm:block">Sign up with Google</p>
+                  <p className="hidden sm:block">Sign up with </p><p>Google</p>
                 </Button>
               </div>
               <div className="text-center flex my-4 text-sm font-semibold items-center justify-center space-x-2">
