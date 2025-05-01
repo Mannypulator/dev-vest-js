@@ -13,7 +13,6 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { assets } from "@/assets/assets";
-// import { signOutUser } from "@/app/action/signOutUser";
 import { useModal } from "./ModelContext";
 import toast from "react-hot-toast";
 
@@ -26,13 +25,13 @@ const LoginHeader = () => {
   const { openModal } = useModal();
   const { data: session } = useSession();
 
-  const handleSignOut = async () => {
+  const handleLogout = async () => {
     try {
-      await signOutUser();
-      toast.success("Signed out successfully");
+      await signOut({ callbackUrl: "/" });
+      toast.success("Logged out successfully")
     } catch (error) {
-      toast.error(error.message || "Failed to sign out");
-      console.error("Sign-out error:", error);
+      console.error("Logout error:", error);
+      toast.error("Failed to log out. Please try again.");
     }
   };
 
@@ -106,7 +105,10 @@ const LoginHeader = () => {
                   Saved Properties
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer hover:bg-gray-300" onClick={() => signOut()}>
+              <DropdownMenuItem
+                className="cursor-pointer hover:bg-gray-300"
+                onClick={handleLogout}
+              >
                 <span className="w-full">Logout</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
