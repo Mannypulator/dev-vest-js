@@ -1,8 +1,10 @@
 import Property from "@/models/Property";
+import User from "@/models/User";
 import connectDB from "@/config/database";
 import PropertyDetails from "@/components/PropertyDetails";
 import { Poppins } from "next/font/google";
 import { convertToSerializeableObject } from "@/utils/convertToObject";
+import mongoose from "mongoose";
 
 // Force dynamic rendering to avoid static generation issues
 export const dynamic = "force-dynamic";
@@ -17,7 +19,7 @@ export default async function PropertyDetailPage({ params: paramsPromise }) {
   const params = await paramsPromise;
 
   // Check for valid params.id
-  if (!params?.id) {
+  if (!params?.id || !mongoose.isValidObjectId(params.id)) {
     return (
       <section className={`${poppins.className} px-6 lg:px-24 py-12`}>
         <div className="text-center text-red-500 text-xl">
@@ -30,9 +32,11 @@ export default async function PropertyDetailPage({ params: paramsPromise }) {
   try {
     await connectDB();
 
-    const propertyDoc = await Property.findById(params.id)
-      .populate("owner", "firstName lastName email")
-      .lean();
+    // Check if User model is registered
+    const isUserModelRegistered = mongoose.models.User;
+    console.log("User model registered:", !!isUserModelRegistered);
+
+    let propertyDoc = await Property.findById(params.id).lean();
 
     if (!propertyDoc) {
       return (
@@ -42,6 +46,22 @@ export default async function PropertyDetailPage({ params: paramsPromise }) {
           </div>
         </section>
       );
+    }
+
+    // Populate owner only if User model is registered
+    if (isUserModelRegistered && propertyDoc.owner) {
+      propertyDoc = await Property.findById(params.id)
+        .populate("owner", "firstName lastName email")
+        .lean();
+    } else {
+      console.warn(
+        "Skipping populate: User model not registered or owner missing",
+        {
+          propertyId: params.id,
+        }
+      );
+      // Ensure owner is null if not populated
+      propertyDoc.owner = null;
     }
 
     // Serialize using convertToSerializeableObject
