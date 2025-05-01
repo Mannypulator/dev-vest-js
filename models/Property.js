@@ -56,8 +56,8 @@ const PropertySchema = new Schema(
     },
     currency: {
       type: String,
-      enum: ["₦", "$", "€", "£", "CAD"],
-      default: "$",
+      enum: ["NGN", "USD", "EUR", "GBP", "CAD"],
+      default: "USD",
     },
     isForSale: {
       type: Boolean,

@@ -17,13 +17,36 @@ import Link from "next/link";
 const PropertyDetails = ({ property }) => {
   const [mainImage, setMainImage] = useState(null);
 
+  // Map currency symbols to ISO 4217 codes
+  const currencyMap = {
+    "₦": "NGN",
+    $: "USD",
+    "€": "EUR",
+    "£": "GBP",
+    CAD: "CAD",
+  };
+
   // Format price
   const formatPrice = (price, currency = "$") => {
     if (!price) return "N/A";
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency === "₦" ? "NGN" : currency,
-    }).format(price);
+
+    // Handle malformed or invalid currency
+    let isoCurrency = currencyMap[currency] || "USD"; // Fallback to USD
+    if (!isoCurrency) {
+      console.warn(
+        `Invalid currency code: ${currency}. Using USD as fallback.`
+      );
+    }
+
+    try {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: isoCurrency,
+      }).format(price);
+    } catch (error) {
+      console.error(`Error formatting price with currency ${currency}:`, error);
+      return `${currency}${price.toLocaleString()}`; // Fallback formatting
+    }
   };
 
   // Guard clause for missing property
@@ -81,7 +104,7 @@ const PropertyDetails = ({ property }) => {
                 height={100}
                 width={200}
                 sizes="(max-width: 768px) 100vw, 800px"
-                className="w-full md:h-[107px] object-cover"
+                className="w-full md:h-[500px] object-cover"
                 priority={true}
               />
             </div>
@@ -134,9 +157,7 @@ const PropertyDetails = ({ property }) => {
             <div className="text-gray-600 mr-2 font-bold">Nightly</div>
             <div className="text-2xl font-bold text-[#E6B027]">
               {property.rates?.nightly ? (
-                `${
-                  property.currency || "$"
-                }${property.rates.nightly.toLocaleString()}`
+                formatPrice(property.rates.nightly, property.currency)
               ) : (
                 <Times className="text-red-500" />
               )}
@@ -147,9 +168,7 @@ const PropertyDetails = ({ property }) => {
             <div className="text-gray-600 mr-2 font-bold">Weekly</div>
             <div className="text-2xl font-bold text-[#E6B027]">
               {property.rates?.weekly ? (
-                `${
-                  property.currency || "$"
-                }${property.rates.weekly.toLocaleString()}`
+                formatPrice(property.rates.weekly, property.currency)
               ) : (
                 <Times className="text-red-500" />
               )}
@@ -160,9 +179,7 @@ const PropertyDetails = ({ property }) => {
             <div className="text-gray-600 mr-2 font-bold">Monthly</div>
             <div className="text-2xl font-bold text-[#E6B027]">
               {property.rates?.monthly ? (
-                `${
-                  property.currency || "$"
-                }${property.rates.monthly.toLocaleString()}`
+                formatPrice(property.rates.monthly, property.currency)
               ) : (
                 <Times className="text-red-500" />
               )}
@@ -196,7 +213,7 @@ const PropertyDetails = ({ property }) => {
           </p>
           <p>
             <Bath color="#E6B027" className="inline-block mr-2" />
-            {property.beds} <span className="hidden sm:inline">Baths</span>
+            {property.baths} <span className="hidden sm:inline">Baths</span>
           </p>
           <p>
             <Ruler color="#E6B027" className="inline-block mr-2" />

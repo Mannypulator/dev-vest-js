@@ -66,7 +66,7 @@ const PropertyCard = ({ property }) => {
           height={0}
           width={0}
           sizes="(max-width: 768px) 100vw, 33vw"
-          className="w-full h-auto rounded-t-xl"
+          className="w-full max-h-[200px] rounded-t-xl"
           priority={true}
         />
       </Link>
