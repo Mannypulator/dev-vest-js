@@ -11,10 +11,10 @@ const poppins = Poppins({
   weight: "400",
 });
 
-const PropertyListings = async ({ title = true, seeAllLink = true }) => {
-  const { success, properties, error } = await getLatestProperties(
-    LATEST_PRODUCTS_LIMIT
-  );
+const PropertyListings = async ({ title = true, seeAllLink = true, limit }) => {
+  // Use provided limit, fallback to LATEST_PRODUCTS_LIMIT, or null for all properties
+  const fetchLimit = limit !== undefined ? limit : LATEST_PRODUCTS_LIMIT;
+  const { success, properties, error } = await getLatestProperties(fetchLimit);
 
   return (
     <section className="container mx-auto max-w-screen-xl py-4 px-5 sm:px-10 md:px-20">

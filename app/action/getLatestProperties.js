@@ -6,11 +6,19 @@ export default async function getLatestProperties(limit) {
   try {
     await connectDB();
 
-    // Fetch properties with lean() to get plain objects
-    const properties = await Property.find()
-      .sort({ createdAt: -1 }) // Sort by newest first
-      .limit(limit)
-      .lean();
+    // Build query
+    let query = Property.find().sort({ createdAt: -1 }).lean();
+
+    // Apply limit only if provided and not null
+    if (limit !== null && limit !== undefined) {
+      query = query.limit(limit);
+    }
+
+    // Fetch properties
+    const properties = await query;
+
+    // Log the number of properties fetched
+    console.log(`Fetched ${properties.length} properties with limit: ${limit}`);
 
     // Serialize all properties
     const serializedProperties = properties.map((property) =>
@@ -23,7 +31,11 @@ export default async function getLatestProperties(limit) {
       error: null,
     };
   } catch (error) {
-    console.error("Error fetching properties:", error);
+    console.error("Error fetching properties:", {
+      message: error.message,
+      stack: error.stack,
+      limit,
+    });
     return {
       success: false,
       properties: [],

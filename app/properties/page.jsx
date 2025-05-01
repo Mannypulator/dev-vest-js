@@ -2,6 +2,9 @@ import PropertyListings from "@/components/PropertyListings";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
 
+// Force dynamic rendering to avoid SSG/caching issues
+export const dynamic = "force-dynamic";
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -22,7 +25,8 @@ export default function PropertiesPage() {
       <h2 className="text-xl py-8 lg:text-3xl font-bold text-[#E6B027] -mb-12">
         Property for Sale
       </h2>
-      <PropertyListings seeAllLink={false} title={false} />
+      {/* Pass a high limit or null to fetch all properties */}
+      <PropertyListings seeAllLink={false} title={false} limit={null} />
     </section>
   );
 }
