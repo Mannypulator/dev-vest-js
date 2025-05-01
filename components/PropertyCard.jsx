@@ -16,15 +16,33 @@ const poppins = Poppins({
 const PropertyCard = ({ property }) => {
   const { data: session, status } = useSession();
 
+  // Map ISO 4217 codes to display symbols
+  const currencyDisplayMap = {
+    NGN: "₦",
+    USD: "$",
+    EUR: "€",
+    GBP: "£",
+    CAD: "C$",
+  };
+
   const getRatesDisplayed = () => {
-    const currency = property.currency || "$"; // Default to $ if currency not stored
+    const currency = property.currency || "USD"; // Default to USD
+    const displayCurrency = currencyDisplayMap[currency] || "$";
+    const validCurrencies = ["NGN", "USD", "EUR", "GBP", "CAD"];
+
+    if (!validCurrencies.includes(currency)) {
+      console.warn(
+        `Invalid currency code: ${currency}. Using USD as fallback.`
+      );
+    }
+
     // For Sale: Use price if valid
     if (
       property.isForSale &&
       typeof property.price === "number" &&
       property.price > 0
     ) {
-      return `${currency}${property.price.toLocaleString()}`;
+      return `${displayCurrency}${property.price.toLocaleString()}`;
     }
     // For Rent: Prioritize rates, fall back to price
     if (!property.isForSale) {
@@ -32,22 +50,22 @@ const PropertyCard = ({ property }) => {
         typeof property.rates?.monthly === "number" &&
         property.rates.monthly > 0
       ) {
-        return `${currency}${property.rates.monthly.toLocaleString()}/mo`;
+        return `${displayCurrency}${property.rates.monthly.toLocaleString()}/mo`;
       }
       if (
         typeof property.rates?.weekly === "number" &&
         property.rates.weekly > 0
       ) {
-        return `${currency}${property.rates.weekly.toLocaleString()}/wk`;
+        return `${displayCurrency}${property.rates.weekly.toLocaleString()}/wk`;
       }
       if (
         typeof property.rates?.nightly === "number" &&
         property.rates.nightly > 0
       ) {
-        return `${currency}${property.rates.nightly.toLocaleString()}/night`;
+        return `${displayCurrency}${property.rates.nightly.toLocaleString()}/night`;
       }
       if (typeof property.price === "number" && property.price > 0) {
-        return `${currency}${property.price.toLocaleString()}/mo`; // Assume monthly
+        return `${displayCurrency}${property.price.toLocaleString()}/mo`; // Assume monthly
       }
     }
     return "Price unavailable";

@@ -347,6 +347,13 @@ export function Modals() {
     try {
       const response = await axios.post("/api/add-property", formData, {
         headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          console.log(`Upload Progress: ${percentCompleted}%`);
+          // Update UI with progress
+        },
       });
       toast.success(response.data.message);
       setAddPropertyState({
@@ -355,7 +362,10 @@ export function Modals() {
       });
     } catch (error) {
       const errorMessage =
-        error.response?.data?.error || "Failed to add property";
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to add property";
       toast.error(errorMessage);
       setAddPropertyState({
         success: false,
@@ -411,7 +421,10 @@ export function Modals() {
       } catch (error) {
         attempt++;
         const errorMessage =
-          error.response?.data?.error || "Failed to update property";
+          error.response?.data?.error ||
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to update property";
         console.error(`Attempt ${attempt} failed:`, errorMessage);
         if (attempt === maxRetries) {
           setEditPropertyState({
@@ -431,9 +444,24 @@ export function Modals() {
   const handleImageUpload = (event) => {
     const files = event.target.files;
     if (!files) return;
-    const newImages = Array.from(files).map((file) =>
-      URL.createObjectURL(file)
-    );
+
+    const maxImages = 5; // Limit to 5 images
+    const maxSize = 5 * 1024 * 1024; // 5MB per image
+
+    if (selectedImages.length + files.length > maxImages) {
+      toast.error(`You can upload a maximum of ${maxImages} images.`);
+      return;
+    }
+
+    const validImages = Array.from(files).filter((file) => {
+      if (file.size > maxSize) {
+        toast.error(`Image ${file.name} exceeds 5MB limit.`);
+        return false;
+      }
+      return true;
+    });
+
+    const newImages = validImages.map((file) => URL.createObjectURL(file));
     setSelectedImages((prev) => [...prev, ...newImages]);
   };
 
@@ -533,7 +561,7 @@ export function Modals() {
     "Other",
   ];
 
-  const currencies = ["₦", "$", "€", "£", "CAD"];
+  const currencies = ["NGN", "USD", "EUR", "GBP", "CAD"];
 
   return (
     <>
@@ -568,7 +596,8 @@ export function Modals() {
                     height={15}
                     width={15}
                   />
-                  <p className="hidden sm:block">Continue with </p><p className="p-0">Facebook</p>
+                  <p className="hidden sm:block">Continue with </p>
+                  <p className="p-0">Facebook</p>
                 </Button>
                 <Button
                   type="button"
@@ -581,7 +610,8 @@ export function Modals() {
                     height={15}
                     width={15}
                   />
-                  <p className="hidden sm:block">Continue with </p><p className="p-0">Google</p>
+                  <p className="hidden sm:block">Continue with </p>
+                  <p className="p-0">Google</p>
                 </Button>
               </div>
               <div className="text-center flex my-4 text-sm font-semibold items-center justify-center space-x-2">
@@ -729,7 +759,8 @@ export function Modals() {
                     width={15}
                     priority={true}
                   />
-                  <p className="hidden sm:block">Sign up with </p><p>Facebook</p>
+                  <p className="hidden sm:block">Sign up with </p>
+                  <p>Facebook</p>
                 </Button>
                 <Button
                   type="button"
@@ -742,7 +773,8 @@ export function Modals() {
                     height={15}
                     width={15}
                   />
-                  <p className="hidden sm:block">Sign up with </p><p>Google</p>
+                  <p className="hidden sm:block">Sign up with </p>
+                  <p>Google</p>
                 </Button>
               </div>
               <div className="text-center flex my-4 text-sm font-semibold items-center justify-center space-x-2">
@@ -1166,12 +1198,22 @@ export function Modals() {
                   defaultValue={currency}
                 >
                   <SelectTrigger className="border rounded-[5px]">
-                    <SelectValue placeholder="₦" />
+                    <SelectValue placeholder="NGN" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
                     {currencies.map((cur) => (
                       <SelectItem className="bg-white" key={cur} value={cur}>
-                        {cur}
+                        {cur === "NGN"
+                          ? "₦ (NGN)"
+                          : cur === "USD"
+                          ? "$ (USD)"
+                          : cur === "EUR"
+                          ? "€ (EUR)"
+                          : cur === "GBP"
+                          ? "£ (GBP)"
+                          : cur === "CAD"
+                          ? "CAD (CAD)"
+                          : cur}
                       </SelectItem>
                     ))}
                   </SelectContent>

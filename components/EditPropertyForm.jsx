@@ -195,9 +195,24 @@ export default function EditPropertyForm({ property }) {
   const handleImageUpload = (event) => {
     const files = event.target.files;
     if (!files) return;
-    const newImages = Array.from(files).map((file) =>
-      URL.createObjectURL(file)
-    );
+
+    const maxImages = 5; // Limit to 5 images
+    const maxSize = 5 * 1024 * 1024; // 5MB per image
+
+    if (selectedImages.length + files.length > maxImages) {
+      toast.error(`You can upload a maximum of ${maxImages} images.`);
+      return;
+    }
+
+    const validImages = Array.from(files).filter((file) => {
+      if (file.size > maxSize) {
+        toast.error(`Image ${file.name} exceeds 5MB limit.`);
+        return false;
+      }
+      return true;
+    });
+
+    const newImages = validImages.map((file) => URL.createObjectURL(file));
     setSelectedImages((prev) => [...prev, ...newImages]);
   };
 
@@ -305,7 +320,7 @@ export default function EditPropertyForm({ property }) {
     "Other",
   ];
 
-  const currencies = ["₦", "$", "€", "£", "CAD"];
+  const currencies = ["NGN", "USD", "EUR", "GBP", "CAD"];
 
   return (
     <div className={`${poppins.className} max-w-2xl mx-auto`}>
@@ -452,12 +467,22 @@ export default function EditPropertyForm({ property }) {
               value={currency}
             >
               <SelectTrigger className="border rounded-[5px]">
-                <SelectValue placeholder="₦" />
+                <SelectValue placeholder="NGN" />
               </SelectTrigger>
               <SelectContent className="bg-white">
                 {currencies.map((cur) => (
                   <SelectItem className="bg-white" key={cur} value={cur}>
-                    {cur}
+                    {cur === "NGN"
+                      ? "₦ (NGN)"
+                      : cur === "USD"
+                      ? "$ (USD)"
+                      : cur === "EUR"
+                      ? "€ (EUR)"
+                      : cur === "GBP"
+                      ? "£ (GBP)"
+                      : cur === "CAD"
+                      ? "CAD (CAD)"
+                      : cur}
                   </SelectItem>
                 ))}
               </SelectContent>

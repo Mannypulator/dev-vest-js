@@ -5,6 +5,15 @@ import Property from "@/models/Property";
 import { getSessionUser } from "@/utils/getSessionUser";
 import cloudinary from "@/config/cloudinary";
 
+// Add bodyParser configuration
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "10mb", // Allow up to 10MB
+    },
+  },
+};
+
 export async function POST(request) {
   try {
     await connectDB();
@@ -78,19 +87,22 @@ export async function POST(request) {
     if (videoFile instanceof File && videoFile.name !== "") {
       try {
         const videoBuffer = await videoFile.arrayBuffer();
-        const videoArray = Array.from(new Uint8Array(videoBuffer));
-        const videoData = Buffer.from(videoArray);
-        const videoBase64 = videoData.toString("base64");
+        const videoData = Buffer.from(videoBuffer);
 
-        const result = await cloudinary.uploader.upload(
-          `data:video/mp4;base64,${videoBase64}`,
-          {
-            folder: "propertypulse",
-            resource_type: "video",
-          }
-        );
-
-        videoUrl = result.secure_url;
+        // Stream video to Cloudinary
+        videoUrl = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            {
+              folder: "propertypulse",
+              resource_type: "video",
+            },
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result.secure_url);
+            }
+          );
+          uploadStream.end(videoData);
+        });
       } catch (error) {
         console.error("Video upload error:", error);
         return NextResponse.json(
@@ -98,6 +110,15 @@ export async function POST(request) {
           { status: 500 }
         );
       }
+    }
+
+    const validCurrencies = ["NGN", "USD", "EUR", "GBP", "CAD"];
+    const currency = formData.get("currency") || "USD";
+    if (!validCurrencies.includes(currency)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid currency code" },
+        { status: 400 }
+      );
     }
 
     // Create propertyData object
@@ -109,7 +130,7 @@ export async function POST(request) {
       price: parseFloat(formData.get("actualPrice")?.replace(/,/g, "")) || null,
       discount:
         parseFloat(formData.get("discountPrice")?.replace(/,/g, "")) || null,
-      currency: formData.get("currency") || "$",
+      currency: formData.get("currency") || "USD",
       location: {
         street: formData.get("street"),
         city: formData.get("city"),
@@ -172,24 +193,40 @@ export async function POST(request) {
     }
 
     // Upload images to Cloudinary
+    const validImageFormats = ["image/jpeg", "image/png", "image/webp"];
     const imageUploadPromises = images.map(async (imageFile) => {
       try {
+        if (!validImageFormats.includes(imageFile.type)) {
+          throw new Error(
+            `Invalid image format for ${imageFile.name}. Allowed: JPEG, PNG, WebP`
+          );
+        }
+        if (imageFile.size > 5 * 1024 * 1024) {
+          throw new Error(`Image ${imageFile.name} exceeds 5MB limit`);
+        }
         const imageBuffer = await imageFile.arrayBuffer();
-        const imageArray = Array.from(new Uint8Array(imageBuffer));
-        const imageData = Buffer.from(imageArray);
-        const imageBase64 = imageData.toString("base64");
-
-        const result = await cloudinary.uploader.upload(
-          `data:image/png;base64,${imageBase64}`,
-          {
-            folder: "propertypulse",
-            transformation: { quality: "auto", fetch_format: "auto" },
-          }
-        );
-
-        return result.secure_url;
+        const imageData = Buffer.from(imageBuffer);
+        return new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            {
+              folder: "propertypulse",
+              resource_type: "image",
+              transformation: { quality: "auto", fetch_format: "auto" },
+              timeout: 15000,
+            },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result.secure_url);
+            }
+          );
+          uploadStream.end(imageData);
+        });
       } catch (error) {
-        throw new Error("Failed to upload image");
+        console.error(
+          `Failed to upload image ${imageFile.name}:`,
+          error.message
+        );
+        throw error;
       }
     });
 
@@ -197,10 +234,10 @@ export async function POST(request) {
       const imageUrls = await Promise.all(imageUploadPromises);
       propertyData.images = imageUrls;
     } catch (error) {
-      console.error("Image upload error:", error);
+      console.error("Image upload error:", error.message);
       return NextResponse.json(
-        { success: false, message: "Failed to upload image" },
-        { status: 500 }
+        { success: false, message: error.message || "Failed to upload image" },
+        { status: 400 }
       );
     }
 

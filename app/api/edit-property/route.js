@@ -4,6 +4,15 @@ import Property from "@/models/Property";
 import { getSessionUser } from "@/utils/getSessionUser";
 import cloudinary from "@/config/cloudinary";
 
+// Add bodyParser configuration
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "10mb", // Allow up to 10MB
+    },
+  },
+};
+
 export async function POST(request) {
   try {
     await connectDB();
@@ -97,22 +106,50 @@ export async function POST(request) {
 
     // Upload new images
     const images = formData.getAll("images");
+    const validImageFormats = ["image/jpeg", "image/png", "image/webp"];
     for (const image of images) {
       if (image instanceof File && image.size > 0) {
-        const arrayBuffer = await image.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-        const result = await new Promise((resolve, reject) => {
-          cloudinary.uploader
-            .upload_stream(
-              { resource_type: "image", timeout: 15000 },
-              (error, result) => {
-                if (error) reject(error);
-                else resolve(result);
-              }
-            )
-            .end(buffer);
-        });
-        newImageUrls.push(result.secure_url);
+        if (!validImageFormats.includes(image.type)) {
+          return NextResponse.json(
+            {
+              error: `Invalid image format for ${image.name}. Allowed: JPEG, PNG, WebP`,
+            },
+            { status: 400 }
+          );
+        }
+        if (image.size > 5 * 1024 * 1024) {
+          return NextResponse.json(
+            { error: `Image ${image.name} exceeds 5MB limit` },
+            { status: 400 }
+          );
+        }
+        try {
+          const arrayBuffer = await image.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          const result = await new Promise((resolve, reject) => {
+            cloudinary.uploader
+              .upload_stream(
+                {
+                  resource_type: "image",
+                  folder: "propertypulse",
+                  transformation: { quality: "auto", fetch_format: "auto" },
+                  timeout: 15000,
+                },
+                (error, result) => {
+                  if (error) reject(error);
+                  else resolve(result);
+                }
+              )
+              .end(buffer);
+          });
+          newImageUrls.push(result.secure_url);
+        } catch (error) {
+          console.error(`Failed to upload image ${image.name}:`, error);
+          return NextResponse.json(
+            { error: `Failed to upload image ${image.name}` },
+            { status: 500 }
+          );
+        }
       }
     }
 
@@ -247,6 +284,14 @@ export async function POST(request) {
     };
     property.images = updatedImages;
     property.videoUrl = videoUrl;
+
+    const validCurrencies = ["NGN", "USD", "EUR", "GBP", "CAD"];
+    if (!validCurrencies.includes(currency)) {
+      return NextResponse.json(
+        { error: "Invalid currency code" },
+        { status: 400 }
+      );
+    }
 
     await property.save();
 

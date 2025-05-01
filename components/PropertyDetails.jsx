@@ -13,41 +13,16 @@ import {
 import Image from "next/image";
 import { assets } from "@/assets/assets";
 import Link from "next/link";
+import { formatPrice, currencyDisplayMap } from "@/utils/currency";
 
 const PropertyDetails = ({ property }) => {
   const [mainImage, setMainImage] = useState(null);
 
-  // Map currency symbols to ISO 4217 codes
-  const currencyMap = {
-    "₦": "NGN",
-    $: "USD",
-    "€": "EUR",
-    "£": "GBP",
-    CAD: "CAD",
-  };
+  // Map ISO 4217 codes to display symbols
+  
 
   // Format price
-  const formatPrice = (price, currency = "$") => {
-    if (!price) return "N/A";
-
-    // Handle malformed or invalid currency
-    let isoCurrency = currencyMap[currency] || "USD"; // Fallback to USD
-    if (!isoCurrency) {
-      console.warn(
-        `Invalid currency code: ${currency}. Using USD as fallback.`
-      );
-    }
-
-    try {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: isoCurrency,
-      }).format(price);
-    } catch (error) {
-      console.error(`Error formatting price with currency ${currency}:`, error);
-      return `${currency}${price.toLocaleString()}`; // Fallback formatting
-    }
-  };
+  
 
   // Guard clause for missing property
   if (!property) {
