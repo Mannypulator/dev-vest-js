@@ -8,14 +8,12 @@ import {
   X as Times,
   Check,
   MapPin as MapMarker,
-  User,
-  Mail,
   ArrowLeft,
 } from "lucide-react";
 import Image from "next/image";
 import { assets } from "@/assets/assets";
 import Link from "next/link";
-import { formatPrice, currencyDisplayMap } from "@/utils/currency";
+import { formatPrice } from "@/utils/currency";
 import BookmarkButton from "./BookmarkButton";
 import ShareButtons from "./ShareButtons";
 import PropertyContactForm from "./PropertyContactForm";
@@ -24,7 +22,7 @@ import { useRouter } from "next/navigation";
 const PropertyDetails = ({ property }) => {
   const [previewImage, setPreviewImage] = useState(null);
 
-  const router = useRouter()
+  const router = useRouter();
 
   // Guard clause for missing property
   if (!property) {
@@ -37,6 +35,7 @@ const PropertyDetails = ({ property }) => {
 
   // Default values for missing fields
   const safeProperty = {
+    _id: property._id || "",
     name: property.name || "Unnamed Property",
     type: property.type || "Unknown",
     images: Array.isArray(property.images) ? property.images : [],
@@ -67,8 +66,8 @@ const PropertyDetails = ({ property }) => {
   };
 
   const handleHomePage = () => {
-    router.push("/")
-  }
+    router.push("/");
+  };
 
   return (
     <main>
@@ -81,9 +80,8 @@ const PropertyDetails = ({ property }) => {
             height={500}
             width={800}
             sizes="(max-width: 768px) 100vw, 800px"
-            className="w-full h-64 md:h-[500px] object-cover cursor-pointer"
+            className="w-full h-64 md:h-[500px] object-cover"
             priority={true}
-            onClick={() => setPreviewImage(safeProperty.images[0])}
           />
         </div>
       ) : (
@@ -117,7 +115,11 @@ const PropertyDetails = ({ property }) => {
 
       {/* Breadcrumbs */}
       <div className="sm:text-sm text-xs text-gray-500 bg-white flex items-center gap-2 pt-10 py-5 px-10 rounded">
-        <ArrowLeft onClick={handleHomePage} color="#E6B027" className="cursor-pointer" />
+        <ArrowLeft
+          onClick={handleHomePage}
+          color="#E6B027"
+          className="cursor-pointer"
+        />
         <Link href="/" className="hover:text-[#E6B027]">
           Home
         </Link>
@@ -131,8 +133,8 @@ const PropertyDetails = ({ property }) => {
         </span>
       </div>
 
-      <div className="mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
+      <div className="mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2">
           {/* Property Info */}
           <div className="bg-white mt-10 mx-10 p-6 rounded shadow-md text-center md:text-left">
             <div className="text-gray-500 mb-4">{safeProperty.type}</div>
@@ -207,21 +209,6 @@ const PropertyDetails = ({ property }) => {
                 </div>
               </div>
             </div>
-
-            {/* Owner Information (Commented Out) */}
-            {/* <div className="mt-6 md:text-base sm:text-sm text-xs flex flex-col">
-          <h3 className="text-lg font-bold mb-2">Owner Information</h3>
-          <div className="flex items-center gap-2 text-gray-600">
-            <Image src={assets.person_icon} alt="person icon" />
-            <p>
-              {safeProperty.owner.firstName} {safeProperty.owner.lastName}
-            </p>
-          </div>
-          <div className="flex items-center gap-2 text-gray-600">
-            <Image src={assets.mail_icon} alt="mail icon" />
-            <p>{safeProperty.owner.email}</p>
-          </div>
-        </div> */}
           </div>
 
           {/* Description & Details */}
@@ -261,52 +248,50 @@ const PropertyDetails = ({ property }) => {
           </div>
 
           {/* Video Tour */}
-      <div className="bg-white p-6 mx-10 rounded-lg shadow-md mt-6">
-        <h3 className="text-lg font-bold mb-6">Property Tour</h3>
-        {safeProperty.videoUrl ? (
-          <video
-            className="w-full rounded-lg"
-            controls
-            poster={safeProperty.images[0] || assets.property1}
-          >
-            <source src={safeProperty.videoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        ) : (
-          <p className="text-gray-600 italic">
-            No video tour available for this property.
-          </p>
-        )}
-      </div>
+          <div className="bg-white p-6 mx-10 rounded-lg shadow-md mt-6">
+            <h3 className="text-lg font-bold mb-6">Property Tour</h3>
+            {safeProperty.videoUrl ? (
+              <video
+                className="w-full rounded-lg"
+                controls
+                poster={safeProperty.images[0] || assets.property1}
+              >
+                <source src={safeProperty.videoUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <p className="text-gray-600 italic">
+                No video tour available for this property.
+              </p>
+            )}
+          </div>
         </div>
 
-        <aside className="lg:col-span-1 space-y-6 mt-10 me-6">
-          <BookmarkButton propertyId={property._id} />
-          <ShareButtons property={property} />
-          <PropertyContactForm property={property} />
+        <aside className="md:col-span-1 space-y-6 mt-10 md:me-6 md:mx-0 mx-10">
+          <BookmarkButton propertyId={safeProperty._id} />
+          <ShareButtons property={safeProperty} />
+          <PropertyContactForm property={safeProperty} />
         </aside>
       </div>
-
-      
 
       {/* Additional Images */}
       {safeProperty.images.length > 1 && (
         <div className="bg-white p-6 mx-7 rounded-lg shadow-md mt-6">
           <h3 className="text-lg font-bold mb-6">Additional Images</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {safeProperty.images.slice(1, 4).map((image, index) => (
+            {safeProperty.images.slice(0, 4).map((image, index) => (
               <div
                 key={`additional-image-${index}`}
                 className="cursor-pointer rounded-lg overflow-hidden bg-gray-500/10"
-                onClick={() => setPreviewImage(image)}
               >
                 <Image
                   src={image}
-                  alt={`${safeProperty.name} image ${index + 2}`}
+                  alt={`${safeProperty.name} image ${index + 1}`}
                   height={200}
-                  width={300}
-                  sizes="(max-width: 768px) 100vw, 300px"
-                  className="w-full h-48 object-cover"
+                  width={400}
+                  sizes="300px"
+                  className="w-full h-[300px] object-cover"
+                  onClick={() => setPreviewImage(image)}
                 />
               </div>
             ))}
