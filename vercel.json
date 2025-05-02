@@ -1,0 +1,9 @@
+{
+  "functions": {
+    "api/add-property.js": {
+      "maxDuration": 30,
+      "memory": 1024,
+      "maxPayloadSize": "30mb"
+    }
+  }
+}

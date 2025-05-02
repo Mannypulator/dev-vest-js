@@ -5,11 +5,10 @@ import Property from "@/models/Property";
 import { getSessionUser } from "@/utils/getSessionUser";
 import cloudinary from "@/config/cloudinary";
 
-// Add bodyParser configuration
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: "10mb", // Allow up to 10MB
+      sizeLimit: "30mb", // Match Vercel function limit
     },
   },
 };
@@ -19,6 +18,26 @@ export async function POST(request) {
     await connectDB();
 
     const formData = await request.formData();
+
+    // Log payload size
+    let payloadSize = 0;
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        payloadSize += value.size;
+      } else {
+        payloadSize += new TextEncoder().encode(value).length;
+      }
+    }
+    console.log("Server-side payload size:", payloadSize / 1024 / 1024, "MB");
+
+    // Validate payload size
+    const MAX_PAYLOAD_SIZE = 30 * 1024 * 1024; // 30MB
+    if (payloadSize > MAX_PAYLOAD_SIZE) {
+      return NextResponse.json(
+        { success: false, message: "Payload exceeds 30MB limit" },
+        { status: 413 }
+      );
+    }
 
     const sessionUser = await getSessionUser();
     if (!sessionUser || !sessionUser.userId) {
@@ -30,7 +49,6 @@ export async function POST(request) {
 
     const { userId } = sessionUser;
 
-    // Validate userId is a valid ObjectId
     if (!Types.ObjectId.isValid(userId)) {
       return NextResponse.json(
         { success: false, message: "Invalid user ID format" },
@@ -38,36 +56,10 @@ export async function POST(request) {
       );
     }
 
-    // Log formData type and content for debugging
-    console.log(
-      "Server-side formData type:",
-      Object.prototype.toString.call(formData)
-    );
-    console.log(
-      "Server-side formData instanceof FormData:",
-      formData instanceof FormData
-    );
-    if (formData instanceof FormData) {
-      console.log("Server-side FormData entries:");
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}:`, value instanceof File ? value.name : value);
-      }
-    } else {
-      console.log(
-        "Server-side formData content:",
-        JSON.stringify(formData, null, 2)
-      );
-    }
-
-    // Validate that formData is a FormData instance
-    if (!(formData instanceof FormData)) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: `Invalid form data: Expected FormData, received ${typeof formData}`,
-        },
-        { status: 400 }
-      );
+    // Log formData entries
+    console.log("Server-side FormData entries:");
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value instanceof File ? value.name : value);
     }
 
     // Handle amenities
@@ -89,12 +81,13 @@ export async function POST(request) {
         const videoBuffer = await videoFile.arrayBuffer();
         const videoData = Buffer.from(videoBuffer);
 
-        // Stream video to Cloudinary
         videoUrl = await new Promise((resolve, reject) => {
           const uploadStream = cloudinary.uploader.upload_stream(
             {
               folder: "propertypulse",
               resource_type: "video",
+              transformation: { quality: "auto", fetch_format: "auto" },
+              timeout: 30000,
             },
             (error, result) => {
               if (error) return reject(error);
@@ -121,7 +114,6 @@ export async function POST(request) {
       );
     }
 
-    // Create propertyData object
     const propertyData = {
       type: formData.get("type"),
       name: formData.get("listingTitle"),
@@ -130,7 +122,7 @@ export async function POST(request) {
       price: parseFloat(formData.get("actualPrice")?.replace(/,/g, "")) || null,
       discount:
         parseFloat(formData.get("discountPrice")?.replace(/,/g, "")) || null,
-      currency: formData.get("currency") || "USD",
+      currency,
       location: {
         street: formData.get("street"),
         city: formData.get("city"),
@@ -163,7 +155,6 @@ export async function POST(request) {
       videoUrl,
     };
 
-    // For For Rent: Map actualPrice to rates.monthly if no rates provided
     if (
       !propertyData.isForSale &&
       !propertyData.rates.monthly &&
@@ -184,7 +175,6 @@ export async function POST(request) {
       }
     }
 
-    // Validate required fields
     if (!propertyData.type || !propertyData.name || !propertyData.description) {
       return NextResponse.json(
         { success: false, message: "Type, name, and description are required" },
@@ -192,7 +182,6 @@ export async function POST(request) {
       );
     }
 
-    // Upload images to Cloudinary
     const validImageFormats = ["image/jpeg", "image/png", "image/webp"];
     const imageUploadPromises = images.map(async (imageFile) => {
       try {
@@ -241,12 +230,15 @@ export async function POST(request) {
       );
     }
 
-    // Save property to MongoDB
     const newProperty = new Property(propertyData);
     await newProperty.save();
 
     return NextResponse.json(
-      { success: true, propertyId: newProperty._id.toString() },
+      {
+        success: true,
+        propertyId: newProperty._id.toString(),
+        message: "Property added successfully",
+      },
       { status: 201 }
     );
   } catch (error) {

@@ -30,6 +30,7 @@ import { signInDefaultValues } from "@/lib/constants";
 import zxcvbn from "zxcvbn";
 import axios from "axios";
 import toast from "react-hot-toast";
+import imageCompression from "browser-image-compression";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -86,6 +87,9 @@ export function Modals() {
 
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const [totalPayloadSize, setTotalPayloadSize] = useState(0); // Track total payload size
+  const MAX_PAYLOAD_SIZE = 25 * 1024 * 1024; // 25MB limit
 
   // Password strength for signup
   const [passwordStrength, setPasswordStrength] = useState({
@@ -325,6 +329,14 @@ export function Modals() {
 
     const formData = new FormData(event.target);
 
+    // Append compressed images
+    selectedImages.forEach((_, index) => {
+      const imageObj = selectedImages[index];
+      if (imageObj.file) {
+        formData.append("images", imageObj.file);
+      }
+    });
+
     // Validate rates for For Rent
     if (
       type === "For Rent" &&
@@ -345,6 +357,11 @@ export function Modals() {
     }
 
     try {
+      console.log(
+        "Submitting form with payload size:",
+        totalPayloadSize / 1024 / 1024,
+        "MB"
+      );
       const response = await axios.post("/api/add-property", formData, {
         headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress: (progressEvent) => {
@@ -352,20 +369,19 @@ export function Modals() {
             (progressEvent.loaded * 100) / progressEvent.total
           );
           console.log(`Upload Progress: ${percentCompleted}%`);
-          // Update UI with progress
         },
       });
-      toast.success(response.data.message);
+      toast.success(response.data.message || "Property added successfully");
       setAddPropertyState({
         success: true,
-        message: response.data.message,
+        message: response.data.message || "Property added successfully",
       });
     } catch (error) {
       const errorMessage =
-        error.response?.data?.error ||
         error.response?.data?.message ||
         error.message ||
         "Failed to add property";
+      console.error("Add property error:", errorMessage, error);
       toast.error(errorMessage);
       setAddPropertyState({
         success: false,
@@ -376,93 +392,55 @@ export function Modals() {
     }
   };
 
-  const handleEditPropertySubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-    setEditPropertyState({ success: false, message: "" });
-
-    const formData = new FormData(event.target);
-    formData.append("propertyId", modalData);
-
-    // Validate rates for For Rent
-    if (
-      type === "For Rent" &&
-      !formData.get("rates.monthly") &&
-      !formData.get("rates.weekly") &&
-      !formData.get("rates.nightly")
-    ) {
-      setEditPropertyState({
-        success: false,
-        message:
-          "At least one rental rate (monthly, weekly, or nightly) is required for For Rent properties",
-      });
-      toast.error(
-        "At least one rental rate is required for For Rent properties"
-      );
-      setLoading(false);
-      return;
-    }
-
-    const maxRetries = 3;
-    let attempt = 0;
-
-    while (attempt < maxRetries) {
-      try {
-        const response = await axios.post("/api/edit-property", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-          timeout: 30000,
-        });
-        toast.success(response.data.message);
-        setEditPropertyState({
-          success: true,
-          message: response.data.message,
-        });
-        return;
-      } catch (error) {
-        attempt++;
-        const errorMessage =
-          error.response?.data?.error ||
-          error.response?.data?.message ||
-          error.message ||
-          "Failed to update property";
-        console.error(`Attempt ${attempt} failed:`, errorMessage);
-        if (attempt === maxRetries) {
-          setEditPropertyState({
-            success: false,
-            message: errorMessage,
-          });
-          toast.error(errorMessage);
-          setLoading(false);
-          return;
-        }
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-    }
-  };
-
   // Utility functions
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
     const files = event.target.files;
     if (!files) return;
 
-    const maxImages = 5; // Limit to 5 images
-    const maxSize = 5 * 1024 * 1024; // 5MB per image
+    const maxImages = 5;
+    const maxSizePerImage = 5 * 1024 * 1024; // 5MB
+    const compressionOptions = {
+      maxSizeMB: 1, // Compress to ~1MB
+      maxWidthOrHeight: 1920, // Resize to max 1920px
+      useWebWorker: true,
+    };
 
     if (selectedImages.length + files.length > maxImages) {
       toast.error(`You can upload a maximum of ${maxImages} images.`);
       return;
     }
 
-    const validImages = Array.from(files).filter((file) => {
-      if (file.size > maxSize) {
-        toast.error(`Image ${file.name} exceeds 5MB limit.`);
-        return false;
-      }
-      return true;
-    });
+    const validImages = [];
+    let newPayloadSize = totalPayloadSize;
 
-    const newImages = validImages.map((file) => URL.createObjectURL(file));
-    setSelectedImages((prev) => [...prev, ...newImages]);
+    for (const file of files) {
+      if (file.size > maxSizePerImage) {
+        toast.error(`Image ${file.name} exceeds 5MB limit.`);
+        continue;
+      }
+
+      try {
+        const compressedFile = await imageCompression(file, compressionOptions);
+        newPayloadSize += compressedFile.size;
+
+        if (newPayloadSize > MAX_PAYLOAD_SIZE) {
+          toast.error("Total upload size exceeds 25MB limit.");
+          return;
+        }
+
+        validImages.push(compressedFile);
+      } catch (error) {
+        console.error(`Compression error for ${file.name}:`, error);
+        toast.error(`Failed to compress ${file.name}.`);
+      }
+    }
+
+    const newImages = validImages.map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+    }));
+    setSelectedImages((prev) => [...prev, ...newImages.map((img) => img.url)]);
+    setTotalPayloadSize(newPayloadSize);
   };
 
   const toggleAmenity = (amenity) => {
@@ -477,7 +455,15 @@ export function Modals() {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 50 * 1024 * 1024) {
+    const maxVideoSize = 50 * 1024 * 1024; // 50MB
+    const newPayloadSize = totalPayloadSize + file.size;
+
+    if (newPayloadSize > MAX_PAYLOAD_SIZE) {
+      toast.error("Total upload size exceeds 25MB limit.");
+      return;
+    }
+
+    if (file.size > maxVideoSize) {
       setVideoError("Video file must be less than 50MB.");
       toast.error("Video file must be less than 50MB.");
       return;
@@ -498,6 +484,7 @@ export function Modals() {
     setVideoError(null);
     const videoURL = URL.createObjectURL(file);
     setVideoPreview(videoURL);
+    setTotalPayloadSize(newPayloadSize);
   };
 
   const removeVideo = () => {
