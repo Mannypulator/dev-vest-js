@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { SERVER_URL } from "@/lib/constants";
 import {
@@ -19,15 +19,14 @@ const ShareButtons = ({ property }) => {
     : "#PropertyForRent";
 
   return (
-    <>
-      <h3 className="text-xl font-bold text-center pt-2">
-        Share This Property:
+    <div className="p-6">
+      <h3 className="text-xl font-bold text-center mb-4">
+        Share This Property
       </h3>
-      <div className="flex gap-3 justify-center pb-5">
+      <div className="flex gap-4 justify-center">
         <FacebookShareButton url={shareUrl} hashtag={hashtag}>
           <FacebookIcon size={40} round />
         </FacebookShareButton>
-
         <TwitterShareButton
           url={shareUrl}
           title={property.name || "Property Listing"}
@@ -35,7 +34,6 @@ const ShareButtons = ({ property }) => {
         >
           <TwitterIcon size={40} round />
         </TwitterShareButton>
-
         <WhatsappShareButton
           url={shareUrl}
           title={property.name || "Property Listing"}
@@ -43,7 +41,6 @@ const ShareButtons = ({ property }) => {
         >
           <WhatsappIcon size={40} round />
         </WhatsappShareButton>
-
         <EmailShareButton
           url={shareUrl}
           subject={property.name || "Property Listing"}
@@ -52,7 +49,7 @@ const ShareButtons = ({ property }) => {
           <EmailIcon size={40} round />
         </EmailShareButton>
       </div>
-    </>
+    </div>
   );
 };
 

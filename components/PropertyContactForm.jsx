@@ -1,22 +1,23 @@
-"use client";
+"use client"
+
 import SubmitMessageButton from "./SubmitMessageButton";
 
 const PropertyContactForm = ({ property }) => {
   return (
-    <div className="bg-white p-6 rounded-xl shadow-md">
+    <div id="contact-form" className="bg-white p-6 rounded-xl shadow-md">
       <h3 className="text-xl font-bold mb-6">Contact Property Manager</h3>
       <form>
         <input
           type="hidden"
           id="property"
           name="property"
-          defaultValue={property.id}
+          defaultValue={property._id}
         />
         <input
           type="hidden"
           id="recipient"
           name="recipient"
-          defaultValue={property.sellerInfo.email}
+          defaultValue={property.seller_info?.email || property.owner?.email}
         />
         <div className="mb-4">
           <label
@@ -26,7 +27,7 @@ const PropertyContactForm = ({ property }) => {
             Name:
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="name"
             name="name"
             type="text"
@@ -42,7 +43,7 @@ const PropertyContactForm = ({ property }) => {
             Email:
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="email"
             name="email"
             type="email"
@@ -58,7 +59,7 @@ const PropertyContactForm = ({ property }) => {
             Phone:
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="phone"
             name="phone"
             type="text"
@@ -73,15 +74,13 @@ const PropertyContactForm = ({ property }) => {
             Message:
           </label>
           <textarea
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 h-44 focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 h-44 focus:outline-none focus:shadow-outline"
             id="message"
             name="message"
             placeholder="Enter your message"
           ></textarea>
         </div>
-        <div>
-          <SubmitMessageButton />
-        </div>
+        <SubmitMessageButton />
       </form>
     </div>
   );

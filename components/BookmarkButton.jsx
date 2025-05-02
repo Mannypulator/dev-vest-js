@@ -1,12 +1,12 @@
-"use client";
+"use client"
+
 import { useState, useEffect } from "react";
 import { Bookmark } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { toast } from "react-toastify";
-import checkBookmarkStatus from "@/app/action/checkBookmarkStatus";
-import bookmarkProperty from "@/app/action/bookmarkProperty";
+import toast from "react-hot-toast";
+import axios from "axios";
 
-const BookmarkButton = ({ property }) => {
+const BookmarkButton = ({ propertyId }) => {
   const { data: session } = useSession();
   const userId = session?.user?.id;
 
@@ -19,43 +19,57 @@ const BookmarkButton = ({ property }) => {
       return;
     }
 
-    const checkStatus = async () => {
-      const res = await checkBookmarkStatus(property.id);
-      if (!res.success) toast.error(res.message);
-      if (res.isBookmarked) setIsBookmarked(res.isBookmarked);
-      setLoading(false);
+    const checkBookmarkStatus = async () => {
+      try {
+        const res = await axios.get(
+          `/api/bookmarks/check?propertyId=${propertyId}`
+        );
+        if (!res.data.success) {
+          toast.error(res.data.message);
+        } else {
+          setIsBookmarked(res.data.isBookmarked);
+        }
+      } catch (error) {
+        toast.error("Failed to check bookmark status");
+        console.error("Bookmark check error:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    checkStatus();
-  }, [property.id, userId]);
+    checkBookmarkStatus();
+  }, [propertyId, userId]);
 
-  const handleSubmit = async () => {
+  const handleClick = async () => {
     if (!userId) {
       toast.error("You need to sign in to bookmark a property");
       return;
     }
 
-    const res = await bookmarkProperty(property.id);
-    if (!res.success) {
-      toast.error(res.message);
-      return;
+    try {
+      const res = await axios.post("/api/bookmarks/toggle", { propertyId });
+      if (!res.data.success) {
+        toast.error(res.data.message);
+      } else {
+        setIsBookmarked(res.data.isBookmarked);
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to update bookmark");
+      console.error("Bookmark toggle error:", error);
     }
-    setIsBookmarked(!isBookmarked);
-    toast.success(res.message);
   };
 
   if (loading) return <p className="text-center">Loading...</p>;
 
   return (
-    <form action={handleSubmit}>
-      <button
-        type="submit"
-        className="bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)] text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center"
-      >
-        <Bookmark className="mr-2" />{" "}
-        {isBookmarked ? "Bookmarked" : "Bookmark Property"}
-      </button>
-    </form>
+    <button
+      onClick={handleClick}
+      className="bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)] text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center"
+    >
+      <Bookmark className="mr-2" />
+      {isBookmarked ? "Bookmarked" : "Bookmark Property"}
+    </button>
   );
 };
 

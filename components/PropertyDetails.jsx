@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import {
   Bed,
@@ -15,9 +16,15 @@ import Image from "next/image";
 import { assets } from "@/assets/assets";
 import Link from "next/link";
 import { formatPrice, currencyDisplayMap } from "@/utils/currency";
+import BookmarkButton from "./BookmarkButton";
+import ShareButtons from "./ShareButtons";
+import PropertyContactForm from "./PropertyContactForm";
+import { useRouter } from "next/navigation";
 
 const PropertyDetails = ({ property }) => {
-  const [mainImage, setMainImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+
+  const router = useRouter()
 
   // Guard clause for missing property
   if (!property) {
@@ -59,22 +66,28 @@ const PropertyDetails = ({ property }) => {
     videoUrl: property.videoUrl || null,
   };
 
+  const handleHomePage = () => {
+    router.push("/")
+  }
+
   return (
     <main>
+      {/* Main Image */}
       {safeProperty.images.length > 0 ? (
         <div className="w-full overflow-hidden bg-gray-500/10">
           <Image
-            src={mainImage || safeProperty.images[0]}
+            src={safeProperty.images[0]}
             alt={safeProperty.name}
-            height={100}
-            width={200}
+            height={500}
+            width={800}
             sizes="(max-width: 768px) 100vw, 800px"
-            className="w-full md:h-[500px] object-cover"
+            className="w-full h-64 md:h-[500px] object-cover cursor-pointer"
             priority={true}
+            onClick={() => setPreviewImage(safeProperty.images[0])}
           />
         </div>
       ) : (
-        <div className="rounded-lg overflow-hidden bg-gray-500/10">
+        <div className="w-full overflow-hidden bg-gray-500/10">
           <Image
             src={assets.property1}
             alt="No image available"
@@ -85,9 +98,26 @@ const PropertyDetails = ({ property }) => {
           />
         </div>
       )}
+
+      {/* Lightbox Preview */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+          onClick={() => setPreviewImage(null)}
+        >
+          <Image
+            src={previewImage}
+            alt={safeProperty.name}
+            width={1200}
+            height={800}
+            className="max-w-full max-h-full"
+          />
+        </div>
+      )}
+
       {/* Breadcrumbs */}
-      <div className="sm:text-sm text-xs text-gray-500 bg-white flex items-center gap-2 pt-10 py-5 px-5">
-        <ArrowLeft color="#E6B027" className="" />{" "}
+      <div className="sm:text-sm text-xs text-gray-500 bg-white flex items-center gap-2 pt-10 py-5 px-10 rounded">
+        <ArrowLeft onClick={handleHomePage} color="#E6B027" className="cursor-pointer" />
         <Link href="/" className="hover:text-[#E6B027]">
           Home
         </Link>
@@ -101,72 +131,85 @@ const PropertyDetails = ({ property }) => {
         </span>
       </div>
 
-      {/* Property Info */}
-      <div className="bg-white mt-10 mx-7 p-6 rounded shadow-md text-center md:text-left">
-        <div className="text-gray-500 mb-4">{safeProperty.type}</div>
-        <h1 className="text-3xl font-bold mb-4">{safeProperty.name}</h1>
-        <div className="text-gray-500 mb-4 flex align-middle justify-center md:justify-start">
-          <MapMarker className="text-[#E6B027] mt-1 mr-1" />
-          <p className="text-[#E6B027]">
-            {safeProperty.location.street}, {safeProperty.location.city},{" "}
-            {safeProperty.location.state}
-          </p>
-        </div>
+      <div className="mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+          {/* Property Info */}
+          <div className="bg-white mt-10 mx-10 p-6 rounded shadow-md text-center md:text-left">
+            <div className="text-gray-500 mb-4">{safeProperty.type}</div>
+            <h1 className="text-3xl font-bold mb-4">{safeProperty.name}</h1>
+            <div className="text-gray-500 mb-4 flex align-middle justify-center md:justify-start">
+              <MapMarker className="text-[#E6B027] mt-1 mr-1" />
+              <p className="text-[#E6B027]">
+                {safeProperty.location.street}, {safeProperty.location.city},{" "}
+                {safeProperty.location.state}
+              </p>
+            </div>
 
-        {/* Price */}
-        <div className="flex flex-col md:flex-row items-center justify-center mb-4 border-b border-gray-200 md:border-b-0 pb-4 md:pb-0">
-          <div className="text-gray-600 mr-2 font-bold">Price</div>
-          <div className="md:text-2xl sm:text-lg text-base flex flex-col sm:flex-row items-center gap-2 font-bold text-[#E6B027]">
-            <div>{formatPrice(safeProperty.price, safeProperty.currency)}</div>
-            {safeProperty.discount && (
-              <div className="text-gray-600 line-through md:text-lg sm:text-base text-xs">
-                {formatPrice(safeProperty.discount, safeProperty.currency)}
+            {/* Price */}
+            <div className="flex flex-col md:flex-row items-center justify-center mb-4 border-b border-gray-200 md:border-b-0 pb-4 md:pb-0">
+              <div className="text-gray-600 mr-2 font-bold">Price</div>
+              <div className="md:text-2xl sm:text-lg text-base flex flex-col sm:flex-row items-center gap-2 font-bold text-[#E6B027]">
+                <div>
+                  {formatPrice(safeProperty.price, safeProperty.currency)}
+                </div>
+                {safeProperty.discount && (
+                  <div className="text-gray-600 line-through md:text-lg sm:text-base text-xs">
+                    {formatPrice(safeProperty.discount, safeProperty.currency)}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </div>
+            </div>
 
-        <h3 className="text-lg font-bold my-6 bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)] text-white p-2 rounded">
-          Rates & Options
-        </h3>
-        <div className="flex flex-col md:flex-row justify-around">
-          {/* Nightly */}
-          <div className="flex items-center justify-center mb-4 border-b border-gray-200 md:border-b-0 pb-4 md:pb-0">
-            <div className="text-gray-600 mr-2 font-bold">Nightly</div>
-            <div className="text-2xl font-bold text-[#E6B027]">
-              {safeProperty.rates.nightly ? (
-                formatPrice(safeProperty.rates.nightly, safeProperty.currency)
-              ) : (
-                <Times className="text-red-500" />
-              )}
+            <h3 className="text-lg font-bold my-6 bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)] text-white p-2 rounded">
+              Rates & Options
+            </h3>
+            <div className="flex flex-col md:flex-row justify-around">
+              {/* Nightly */}
+              <div className="flex items-center justify-center mb-4 border-b border-gray-200 md:border-b-0 pb-4 md:pb-0">
+                <div className="text-gray-600 mr-2 font-bold">Nightly</div>
+                <div className="text-2xl font-bold text-[#E6B027]">
+                  {safeProperty.rates.nightly ? (
+                    formatPrice(
+                      safeProperty.rates.nightly,
+                      safeProperty.currency
+                    )
+                  ) : (
+                    <Times className="text-red-500" />
+                  )}
+                </div>
+              </div>
+              {/* Weekly */}
+              <div className="flex items-center justify-center mb-4 border-b border-gray-200 md:border-b-0 pb-4 md:pb-0">
+                <div className="text-gray-600 mr-2 font-bold">Weekly</div>
+                <div className="text-2xl font-bold text-[#E6B027]">
+                  {safeProperty.rates.weekly ? (
+                    formatPrice(
+                      safeProperty.rates.weekly,
+                      safeProperty.currency
+                    )
+                  ) : (
+                    <Times className="text-red-500" />
+                  )}
+                </div>
+              </div>
+              {/* Monthly */}
+              <div className="flex items-center justify-center mb-4 pb-4 md:pb-0">
+                <div className="text-gray-600 mr-2 font-bold">Monthly</div>
+                <div className="text-2xl font-bold text-[#E6B027]">
+                  {safeProperty.rates.monthly ? (
+                    formatPrice(
+                      safeProperty.rates.monthly,
+                      safeProperty.currency
+                    )
+                  ) : (
+                    <Times className="text-red-500" />
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-          {/* Weekly */}
-          <div className="flex items-center justify-center mb-4 border-b border-gray-200 md:border-b-0 pb-4 md:pb-0">
-            <div className="text-gray-600 mr-2 font-bold">Weekly</div>
-            <div className="text-2xl font-bold text-[#E6B027]">
-              {safeProperty.rates.weekly ? (
-                formatPrice(safeProperty.rates.weekly, safeProperty.currency)
-              ) : (
-                <Times className="text-red-500" />
-              )}
-            </div>
-          </div>
-          {/* Monthly */}
-          <div className="flex items-center justify-center mb-4 pb-4 md:pb-0">
-            <div className="text-gray-600 mr-2 font-bold">Monthly</div>
-            <div className="text-2xl font-bold text-[#E6B027]">
-              {safeProperty.rates.monthly ? (
-                formatPrice(safeProperty.rates.monthly, safeProperty.currency)
-              ) : (
-                <Times className="text-red-500" />
-              )}
-            </div>
-          </div>
-        </div>
 
-        {/* Owner Information */}
-        {/* <div className="mt-6 md:text-base sm:text-sm text-xs flex flex-col">
+            {/* Owner Information (Commented Out) */}
+            {/* <div className="mt-6 md:text-base sm:text-sm text-xs flex flex-col">
           <h3 className="text-lg font-bold mb-2">Owner Information</h3>
           <div className="flex items-center gap-2 text-gray-600">
             <Image src={assets.person_icon} alt="person icon" />
@@ -179,43 +222,46 @@ const PropertyDetails = ({ property }) => {
             <p>{safeProperty.owner.email}</p>
           </div>
         </div> */}
-      </div>
+          </div>
 
-      {/* Description & Details */}
-      <div className="bg-white mt-6 mx-7 p-6 rounded shadow-md">
-        <h3 className="text-lg font-bold mb-6">Description & Details</h3>
-        <div className="flex justify-center gap-4 text-gray-600 mb-4 text-xl space-x-9">
-          <p>
-            <Bed color="#E6B027" className="inline-block mr-2" />
-            {safeProperty.beds} <span className="hidden sm:inline">Beds</span>
-          </p>
-          <p>
-            <Bath color="#E6B027" className="inline-block mr-2" />
-            {safeProperty.baths} <span className="hidden sm:inline">Baths</span>
-          </p>
-          <p>
-            <Ruler color="#E6B027" className="inline-block mr-2" />
-            {safeProperty.square_feet}{" "}
-            <span className="hidden sm:inline">sqft</span>
-          </p>
-        </div>
-        <p className="text-gray-600 mb-4">{safeProperty.description}</p>
-      </div>
+          {/* Description & Details */}
+          <div className="bg-white mt-6 mx-10 p-6 rounded shadow-md">
+            <h3 className="text-lg font-bold mb-6">Description & Details</h3>
+            <div className="flex justify-center gap-4 text-gray-600 mb-4 text-xl space-x-9">
+              <p>
+                <Bed color="#E6B027" className="inline-block mr-2" />
+                {safeProperty.beds}{" "}
+                <span className="hidden sm:inline">Beds</span>
+              </p>
+              <p>
+                <Bath color="#E6B027" className="inline-block mr-2" />
+                {safeProperty.baths}{" "}
+                <span className="hidden sm:inline">Baths</span>
+              </p>
+              <p>
+                <Ruler color="#E6B027" className="inline-block mr-2" />
+                {safeProperty.square_feet}{" "}
+                <span className="hidden sm:inline">sqft</span>
+              </p>
+            </div>
+            <p className="text-gray-600 mb-4">{safeProperty.description}</p>
+          </div>
 
-      {/* Amenities */}
-      <div className="bg-white p-6 mx-7 rounded shadow-md mt-6">
-        <h3 className="text-lg font-bold mb-6">Amenities</h3>
-        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 list-none space-y-2">
-          {safeProperty.amenities.map((amenity, index) => (
-            <li key={index}>
-              <Check className="inline-block text-green-600 mr-2" /> {amenity}
-            </li>
-          ))}
-        </ul>
-      </div>
+          {/* Amenities */}
+          <div className="bg-white p-6 mx-10 rounded shadow-md mt-6">
+            <h3 className="text-lg font-bold mb-6">Amenities</h3>
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 list-none space-y-2">
+              {safeProperty.amenities.map((amenity, index) => (
+                <li key={index}>
+                  <Check className="inline-block text-green-600 mr-2" />{" "}
+                  {amenity}
+                </li>
+              ))}
+            </ul>
+          </div>
 
-      {/* Video Tour */}
-      <div className="bg-white p-6 mx-7 rounded-lg shadow-md mt-6">
+          {/* Video Tour */}
+      <div className="bg-white p-6 mx-10 rounded-lg shadow-md mt-6">
         <h3 className="text-lg font-bold mb-6">Property Tour</h3>
         {safeProperty.videoUrl ? (
           <video
@@ -232,29 +278,41 @@ const PropertyDetails = ({ property }) => {
           </p>
         )}
       </div>
-
-      {/* Image Section */}
-      <div className="flex flex-col md:flex-row sm:gap-4 gap-2 sm:p-6 p-2">
-        <div className="flex md:flex-col flex-row sm:gap-2 gap-1 md:w-1/4">
-          {safeProperty.images.map((image, index) => (
-            <div
-              key={`secondary-image-${index}`}
-              onClick={() => setMainImage(image)}
-              className="cursor-pointer rounded-lg overflow-hidden bg-gray-500/10"
-            >
-              <Image
-                src={image}
-                alt={`${safeProperty.name} image ${index + 1}`}
-                height={20}
-                width={40}
-                sizes="150px"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ))}
         </div>
-        {/* Main Image (Right, Larger) */}
+
+        <aside className="lg:col-span-1 space-y-6 mt-10 me-6">
+          <BookmarkButton propertyId={property._id} />
+          <ShareButtons property={property} />
+          <PropertyContactForm property={property} />
+        </aside>
       </div>
+
+      
+
+      {/* Additional Images */}
+      {safeProperty.images.length > 1 && (
+        <div className="bg-white p-6 mx-7 rounded-lg shadow-md mt-6">
+          <h3 className="text-lg font-bold mb-6">Additional Images</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {safeProperty.images.slice(1, 4).map((image, index) => (
+              <div
+                key={`additional-image-${index}`}
+                className="cursor-pointer rounded-lg overflow-hidden bg-gray-500/10"
+                onClick={() => setPreviewImage(image)}
+              >
+                <Image
+                  src={image}
+                  alt={`${safeProperty.name} image ${index + 2}`}
+                  height={200}
+                  width={300}
+                  sizes="(max-width: 768px) 100vw, 300px"
+                  className="w-full h-48 object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </main>
   );
 };
