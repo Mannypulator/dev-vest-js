@@ -9,6 +9,7 @@ import {
   MapPin as MapMarker,
   User,
   Mail,
+  ArrowLeft,
 } from "lucide-react";
 import Image from "next/image";
 import { assets } from "@/assets/assets";
@@ -60,8 +61,33 @@ const PropertyDetails = ({ property }) => {
 
   return (
     <main>
+      {safeProperty.images.length > 0 ? (
+        <div className="w-full overflow-hidden bg-gray-500/10">
+          <Image
+            src={mainImage || safeProperty.images[0]}
+            alt={safeProperty.name}
+            height={100}
+            width={200}
+            sizes="(max-width: 768px) 100vw, 800px"
+            className="w-full md:h-[500px] object-cover"
+            priority={true}
+          />
+        </div>
+      ) : (
+        <div className="rounded-lg overflow-hidden bg-gray-500/10">
+          <Image
+            src={assets.property1}
+            alt="No image available"
+            height={400}
+            width={800}
+            sizes="(max-width: 768px) 100vw, 800px"
+            className="w-full h-64 md:h-96 object-cover"
+          />
+        </div>
+      )}
       {/* Breadcrumbs */}
-      <div className="sm:text-sm text-xs text-gray-500 flex items-center gap-2 mb-4">
+      <div className="sm:text-sm text-xs text-gray-500 bg-white flex items-center gap-2 pt-10 py-5 px-5">
+        <ArrowLeft color="#E6B027" className="" />{" "}
         <Link href="/" className="hover:text-[#E6B027]">
           Home
         </Link>
@@ -75,58 +101,8 @@ const PropertyDetails = ({ property }) => {
         </span>
       </div>
 
-      {/* Image Section */}
-      <div className="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
-        {safeProperty.images.length > 0 ? (
-          <div className="flex flex-col md:flex-row sm:gap-4 gap-2 sm:p-6 p-2">
-            {/* Secondary Images (Left, Vertical) */}
-            <div className="flex md:flex-col flex-row sm:gap-2 gap-1 md:w-1/4">
-              {safeProperty.images.map((image, index) => (
-                <div
-                  key={`secondary-image-${index}`}
-                  onClick={() => setMainImage(image)}
-                  className="cursor-pointer rounded-lg overflow-hidden bg-gray-500/10"
-                >
-                  <Image
-                    src={image}
-                    alt={`${safeProperty.name} image ${index + 1}`}
-                    height={20}
-                    width={40}
-                    sizes="150px"
-                    className="w-full h-full sm:h-[100px] object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-            {/* Main Image (Right, Larger) */}
-            <div className="w-full md:w-3/4 rounded-lg overflow-hidden bg-gray-500/10">
-              <Image
-                src={mainImage || safeProperty.images[0]}
-                alt={safeProperty.name}
-                height={100}
-                width={200}
-                sizes="(max-width: 768px) 100vw, 800px"
-                className="w-full md:h-[500px] object-cover"
-                priority={true}
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="rounded-lg overflow-hidden bg-gray-500/10">
-            <Image
-              src={assets.property1}
-              alt="No image available"
-              height={400}
-              width={800}
-              sizes="(max-width: 768px) 100vw, 800px"
-              className="w-full h-64 md:h-96 object-cover"
-            />
-          </div>
-        )}
-      </div>
-
       {/* Property Info */}
-      <div className="bg-white sm:p-6 p-2 rounded-lg shadow-md text-center md:text-left">
+      <div className="bg-white mt-10 mx-7 p-6 rounded shadow-md text-center md:text-left">
         <div className="text-gray-500 mb-4">{safeProperty.type}</div>
         <h1 className="text-3xl font-bold mb-4">{safeProperty.name}</h1>
         <div className="text-gray-500 mb-4 flex align-middle justify-center md:justify-start">
@@ -190,7 +166,7 @@ const PropertyDetails = ({ property }) => {
         </div>
 
         {/* Owner Information */}
-        <div className="mt-6 md:text-base sm:text-sm text-xs flex flex-col">
+        {/* <div className="mt-6 md:text-base sm:text-sm text-xs flex flex-col">
           <h3 className="text-lg font-bold mb-2">Owner Information</h3>
           <div className="flex items-center gap-2 text-gray-600">
             <Image src={assets.person_icon} alt="person icon" />
@@ -202,11 +178,11 @@ const PropertyDetails = ({ property }) => {
             <Image src={assets.mail_icon} alt="mail icon" />
             <p>{safeProperty.owner.email}</p>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Description & Details */}
-      <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+      <div className="bg-white mt-6 mx-7 p-6 rounded shadow-md">
         <h3 className="text-lg font-bold mb-6">Description & Details</h3>
         <div className="flex justify-center gap-4 text-gray-600 mb-4 text-xl space-x-9">
           <p>
@@ -227,7 +203,7 @@ const PropertyDetails = ({ property }) => {
       </div>
 
       {/* Amenities */}
-      <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+      <div className="bg-white p-6 mx-7 rounded shadow-md mt-6">
         <h3 className="text-lg font-bold mb-6">Amenities</h3>
         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 list-none space-y-2">
           {safeProperty.amenities.map((amenity, index) => (
@@ -239,7 +215,7 @@ const PropertyDetails = ({ property }) => {
       </div>
 
       {/* Video Tour */}
-      <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+      <div className="bg-white p-6 mx-7 rounded-lg shadow-md mt-6">
         <h3 className="text-lg font-bold mb-6">Property Tour</h3>
         {safeProperty.videoUrl ? (
           <video
@@ -255,6 +231,29 @@ const PropertyDetails = ({ property }) => {
             No video tour available for this property.
           </p>
         )}
+      </div>
+
+      {/* Image Section */}
+      <div className="flex flex-col md:flex-row sm:gap-4 gap-2 sm:p-6 p-2">
+        <div className="flex md:flex-col flex-row sm:gap-2 gap-1 md:w-1/4">
+          {safeProperty.images.map((image, index) => (
+            <div
+              key={`secondary-image-${index}`}
+              onClick={() => setMainImage(image)}
+              className="cursor-pointer rounded-lg overflow-hidden bg-gray-500/10"
+            >
+              <Image
+                src={image}
+                alt={`${safeProperty.name} image ${index + 1}`}
+                height={20}
+                width={40}
+                sizes="150px"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
+        {/* Main Image (Right, Larger) */}
       </div>
     </main>
   );

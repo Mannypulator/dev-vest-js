@@ -329,14 +329,6 @@ export function Modals() {
 
     const formData = new FormData(event.target);
 
-    // Append compressed images
-    selectedImages.forEach((_, index) => {
-      const imageObj = selectedImages[index];
-      if (imageObj.file) {
-        formData.append("images", imageObj.file);
-      }
-    });
-
     // Validate rates for For Rent
     if (
       type === "For Rent" &&
@@ -357,11 +349,6 @@ export function Modals() {
     }
 
     try {
-      console.log(
-        "Submitting form with payload size:",
-        totalPayloadSize / 1024 / 1024,
-        "MB"
-      );
       const response = await axios.post("/api/add-property", formData, {
         headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress: (progressEvent) => {
@@ -369,19 +356,20 @@ export function Modals() {
             (progressEvent.loaded * 100) / progressEvent.total
           );
           console.log(`Upload Progress: ${percentCompleted}%`);
+          // Update UI with progress
         },
       });
-      toast.success(response.data.message || "Property added successfully");
+      toast.success(response.data.message);
       setAddPropertyState({
         success: true,
-        message: response.data.message || "Property added successfully",
+        message: response.data.message,
       });
     } catch (error) {
       const errorMessage =
+        error.response?.data?.error ||
         error.response?.data?.message ||
         error.message ||
         "Failed to add property";
-      console.error("Add property error:", errorMessage, error);
       toast.error(errorMessage);
       setAddPropertyState({
         success: false,

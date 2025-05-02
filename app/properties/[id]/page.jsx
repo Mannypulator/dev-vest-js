@@ -5,6 +5,9 @@ import PropertyDetails from "@/components/PropertyDetails";
 import { Poppins } from "next/font/google";
 import { convertToSerializeableObject } from "@/utils/convertToObject";
 import mongoose from "mongoose";
+import BookmarkButton from "@/components/BookmarkButton";
+import ShareButtons from "@/components/ShareButtons";
+import PropertyContactForm from "@/components/PropertyContactForm";
 
 // Force dynamic rendering to avoid static generation issues
 export const dynamic = "force-dynamic";
@@ -68,8 +71,13 @@ export default async function PropertyDetailPage({ params: paramsPromise }) {
     const property = convertToSerializeableObject(propertyDoc);
 
     return (
-      <section className={`${poppins.className} py-4 px-5 sm:px-10 md:px-20`}>
+      <section className={`${poppins.className} bg-blue-50`}>
         <PropertyDetails property={property} />
+        <aside className="space-y-4">
+          {/* <BookmarkButton /> */}
+          <ShareButtons property={property} />
+          <PropertyContactForm property={property} />
+        </aside>
       </section>
     );
   } catch (error) {
