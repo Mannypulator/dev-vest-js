@@ -1,5 +1,3 @@
-// 1. Create our "Magic Cookie Jar" (Modal Context)
-// components/modal-context.jsx
 "use client";
 
 import { createContext, useContext, useState } from "react";

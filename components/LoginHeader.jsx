@@ -1,12 +1,9 @@
 "use client";
 import Image from "next/image";
-import logo from "@/assets/images/logo.svg";
 import { Bell, Clock } from "lucide-react";
-import defaultProfile from "@/assets/images/default-profile.svg"; // Replace with actual user profile image
 import { Poppins } from "next/font/google";
 import Link from "next/link";
-import { useModal } from "./modal-context";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,8 +11,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { signOutUser } from "@/lib/actions/user.actions";
 import { Button } from "./ui/button";
+import { assets } from "@/assets/assets";
+import { useModal } from "./ModelContext";
+import toast from "react-hot-toast";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,16 +25,24 @@ const LoginHeader = () => {
   const { openModal } = useModal();
   const { data: session } = useSession();
 
-  console.log(session);
+  const handleLogout = async () => {
+    try {
+      await signOut({ callbackUrl: "/" });
+      toast.success("Logged out successfully")
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Failed to log out. Please try again.");
+    }
+  };
+
   return (
     <header
-      className={`${poppins.className} bg-[linear-gradient(219.84deg,_var(--text-primary)_4.14%,_var(--text-secondary)_44.22%)] text-white py-4 px-24 flex justify-between items-center`}
+      className={`${poppins.className} bg-[linear-gradient(219.84deg,_var(--text-primary)_4.14%,_var(--text-secondary)_44.22%)] text-white py-4 px-5 sm:px-10 md:px-20 flex justify-between items-center`}
     >
       <div className="flex items-center">
-        {/* add link to image to go home page */}
         <Link href="/">
           <Image
-            src={logo}
+            src={assets.logo}
             alt="Drive Vest Logo"
             height={40}
             width={40}
@@ -57,16 +64,16 @@ const LoginHeader = () => {
           </span>
         </div>
         <DropdownMenu>
-          <DropdownMenuTrigger className="border-none bg-white outline-none rounded-full">
-            <div className="flex items-center space-x-2 bg-white rounded-full p-2">
+          <DropdownMenuTrigger className="border-none bg-white outline-none rounded-full cursor-pointer">
+            <div className="flex items-center space-x-2 bg-white rounded-full p-1 md:p-2">
               <Image
-                src={session?.user?.image || defaultProfile}
+                src={session?.user?.image || assets.default_profile}
                 alt="User Avatar"
                 width={25}
                 height={25}
                 className="rounded-full"
               />
-              <span className="text-black">{session?.user?.name ?? ""}</span>
+              <span className="text-black hidden sm:block">{session?.user?.name ?? ""}</span>
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -88,33 +95,27 @@ const LoginHeader = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white rounded-[5px] outline-none border-none">
             <DropdownMenuGroup>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer hover:bg-gray-300">
                 <Link href="/profile" className="w-full">
                   Profile
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer hover:bg-gray-300">
                 <Link href="/properties/saved" className="w-full">
                   Saved Properties
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() => signOutUser()}
+                className="cursor-pointer hover:bg-gray-300"
+                onClick={handleLogout}
               >
-                <form action={signOutUser} className="outline-none border-none">
-                  <Button className="rounded-[5px] outline-none border-none mx-auto px-4 py-1 text-center shadow-none">
-                    Logout
-                  </Button>
-                </form>
+                <span className="w-full">Logout</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-
-        {/* Right button */}
         <Button
-          className=" bg-[#E6B027] text-white py-2 px-6 rounded-[5px]"
+          className="bg-[#E6B027] text-white py-0 text-xs sm:text-sm md:text-base sm:py-1 md:py-2 px-2 sm:px-4 md:px-6 rounded-[5px] cursor-pointer"
           onClick={() => openModal("add-post")}
         >
           + Post

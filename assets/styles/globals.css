@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   :root {
@@ -26,10 +24,17 @@
     /* Border Colors */
     --border-gray-100: #f3f4f6;
   }
+
+  * {
+    @apply border-gray-100; /* Replaced border-border */
+  }
+
+  body {
+    @apply bg-white text-gray-900; /* Replaced bg-background, text-foreground */
+  }
 }
 
-/* Apply variables to existing classes */
-
+/* Custom classes using variables */
 .text-main {
   color: var(--text-main);
 }
@@ -68,18 +73,6 @@
 
 .border-gray-100 {
   border-color: var(--border-gray-100);
-}
-
-@layer base {
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
 }
 
 a {

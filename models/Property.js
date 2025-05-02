@@ -17,29 +17,14 @@ const PropertySchema = new Schema(
     },
     description: {
       type: String,
-    },
-    isForSale: { type: Boolean, default: true },
-    price: {
-      type: Number,
-      required: false,
-    },
-    discount: {
-      type: Number,
-      required: false,
+      required: true,
     },
     location: {
-      street: {
-        type: String,
-      },
-      city: {
-        type: String,
-      },
-      state: {
-        type: String,
-      },
-      zipcode: {
-        type: String,
-      },
+      street: { type: String },
+      city: { type: String },
+      state: { type: String },
+      country: { type: String },
+      zipcode: { type: String },
     },
     beds: {
       type: Number,
@@ -59,36 +44,37 @@ const PropertySchema = new Schema(
       },
     ],
     rates: {
-      nightly: {
-        type: Number,
-      },
-      weekly: {
-        type: Number,
-      },
-      monthly: {
-        type: Number,
-      },
+      nightly: { type: Number },
+      weekly: { type: Number },
+      monthly: { type: Number },
+    },
+    price: {
+      type: Number,
+    },
+    discount: {
+      type: Number,
+    },
+    currency: {
+      type: String,
+      enum: ["NGN", "USD", "EUR", "GBP", "CAD"],
+      default: "USD",
+    },
+    isForSale: {
+      type: Boolean,
+      required: true,
     },
     seller_info: {
-      name: {
-        type: String,
-      },
-      email: {
-        type: String,
-      },
-      phone: {
-        type: String,
-      },
+      name: { type: String },
+      email: { type: String },
+      phone: { type: String },
     },
     images: [
       {
         type: String,
       },
     ],
-    videoUrl: { type: String, required: false },
-    is_featured: {
-      type: Boolean,
-      default: false,
+    videoUrl: {
+      type: String,
     },
   },
   {

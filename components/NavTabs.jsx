@@ -2,6 +2,7 @@
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const NavTabs = () => {
   const tabs = [
@@ -17,15 +18,24 @@ const NavTabs = () => {
   ];
 
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
+  const router = useRouter();
+
+  const handleTabClick = (tab) => {
+    setSelectedTab(tab);
+    if (tab !== "More") {
+      const query = `?propertyType=${encodeURIComponent(tab)}`;
+      router.push(`/properties/search${query}`);
+    }
+    // Handle "More" tab separately (e.g., dropdown or no navigation)
+  };
 
   return (
     <nav className="bg-white py-2 pt-16">
-      <div className="container mx-auto px-4 flex justify-around space-x-4 sm:space-x-8 overflow-x-auto">
+      <div className="container mx-auto py-4 px-5 sm:px-10 md:px-20 flex justify-around space-x-4 sm:space-x-8 overflow-x-auto">
         {tabs.map((tab) => (
-          <Link
-            href="#"
+          <button
             key={tab}
-            onClick={() => setSelectedTab(tab)}
+            onClick={() => handleTabClick(tab)}
             className={`whitespace-nowrap px-3 py-2 text-base sm:text-lg font-medium ${
               selectedTab === tab
                 ? "text-[#E6B027] border-b-2 border-[#E6B027]"
@@ -36,7 +46,7 @@ const NavTabs = () => {
             {tab === "More" && (
               <ChevronDown size={18} className="inline ml-1 text-black" />
             )}
-          </Link>
+          </button>
         ))}
       </div>
     </nav>
