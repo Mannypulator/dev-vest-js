@@ -563,7 +563,7 @@ export function Modals() {
                 <Button
                   type="button"
                   onClick={() => signIn("facebook")}
-                  className="text-black border-black border-[1px] rounded-[5px] text-xs"
+                  className="text-black border-black border-[1px] rounded-[5px] text-xs cursor-pointer"
                 >
                   <Image
                     src={assets.facebook}
@@ -577,7 +577,7 @@ export function Modals() {
                 <Button
                   type="button"
                   onClick={() => signIn("google")}
-                  className="text-black border-black border-[1px] rounded-[5px] text-xs"
+                  className="text-black border-black border-[1px] rounded-[5px] text-xs cursor-pointer"
                 >
                   <Image
                     src={assets.google}
@@ -725,7 +725,7 @@ export function Modals() {
                 <Button
                   type="button"
                   onClick={() => signIn("facebook")}
-                  className="text-black border-black border rounded-[5px] text-xs"
+                  className="text-black border-black border rounded-[5px] text-xs cursor-pointer"
                 >
                   <Image
                     src={assets.facebook}
@@ -740,7 +740,7 @@ export function Modals() {
                 <Button
                   type="button"
                   onClick={() => signIn("google")}
-                  className="text-black border-black border rounded-[5px] text-xs"
+                  className="text-black border-black border rounded-[5px] text-xs cursor-pointer"
                 >
                   <Image
                     src={assets.google}

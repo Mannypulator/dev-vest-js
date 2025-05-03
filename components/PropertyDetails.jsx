@@ -18,6 +18,7 @@ import BookmarkButton from "./BookmarkButton";
 import ShareButtons from "./ShareButtons";
 import PropertyContactForm from "./PropertyContactForm";
 import { useRouter } from "next/navigation";
+import { Gallery, Item } from "react-photoswipe-gallery";
 
 const PropertyDetails = ({ property }) => {
   const [previewImage, setPreviewImage] = useState(null);
@@ -98,7 +99,7 @@ const PropertyDetails = ({ property }) => {
       )}
 
       {/* Lightbox Preview */}
-      {previewImage && (
+      {/* {previewImage && (
         <div
           className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
           onClick={() => setPreviewImage(null)}
@@ -111,7 +112,7 @@ const PropertyDetails = ({ property }) => {
             className="max-w-full max-h-full"
           />
         </div>
-      )}
+      )} */}
 
       {/* Breadcrumbs */}
       <div className="sm:text-sm text-xs text-gray-500 bg-white flex items-center gap-2 pt-10 py-5 px-10 rounded">
@@ -275,28 +276,70 @@ const PropertyDetails = ({ property }) => {
       </div>
 
       {/* Additional Images */}
-      {safeProperty.images.length > 1 && (
-        <div className="bg-white p-6 mx-7 rounded-lg shadow-md mt-6">
-          <h3 className="text-lg font-bold mb-6">Additional Images</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {safeProperty.images.slice(0, 4).map((image, index) => (
-              <div
-                key={`additional-image-${index}`}
-                className="cursor-pointer rounded-lg overflow-hidden bg-gray-500/10"
-              >
-                <Image
-                  src={image}
-                  alt={`${safeProperty.name} image ${index + 1}`}
-                  height={200}
-                  width={400}
-                  sizes="300px"
-                  className="w-full h-[300px] object-cover"
-                  onClick={() => setPreviewImage(image)}
-                />
-              </div>
-            ))}
+      {safeProperty.images.length > 0 && (
+        <Gallery>
+          <div className="bg-white p-6 mx-7 rounded-lg shadow-md mt-6">
+            <h3 className="text-lg font-bold mb-6">Additional Images</h3>
+            <div className="container mx-auto">
+              {safeProperty.images.length === 1 ? (
+                <Item
+                  original={safeProperty.images[0]}
+                  thumbnail={safeProperty.images[0]}
+                  width="1000"
+                  height="600"
+                >
+                  {({ ref, open }) => (
+                    <Image
+                      ref={ref}
+                      onClick={open}
+                      src={safeProperty.images[0]}
+                      alt={`${safeProperty.name} image 1`}
+                      className="object-cover h-[400px] mx-auto rounded-xl"
+                      width={1800}
+                      height={400}
+                      sizes="(max-width: 768px) 100vw, 1800px"
+                      priority={true}
+                    />
+                  )}
+                </Item>
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  {safeProperty.images.slice(1).map((image, index) => (
+                    <div
+                      key={`additional-image-${index}`}
+                      className={
+                        safeProperty.images.length === 3 && index === 1
+                          ? "col-span-2"
+                          : "col-span-1"
+                      }
+                    >
+                      <Item
+                        original={image}
+                        thumbnail={image}
+                        width="1000"
+                        height="600"
+                      >
+                        {({ ref, open }) => (
+                          <Image
+                            ref={ref}
+                            onClick={open}
+                            src={image}
+                            alt={`${safeProperty.name} image ${index + 2}`}
+                            className="object-cover h-[400px] w-full rounded-xl cursor-pointer"
+                            width={0}
+                            height={0}
+                            sizes="100vw"
+                            priority={true}
+                          />
+                        )}
+                      </Item>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        </Gallery>
       )}
     </main>
   );

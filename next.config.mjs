@@ -12,6 +12,11 @@ const nextConfig = {
         hostname: "res.cloudinary.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "scontent.flos3-1.fna.fbcdn.net",
+        pathname: "**",
+      },
     ],
   },
 };
