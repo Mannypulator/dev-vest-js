@@ -31,6 +31,7 @@ export const getSessionUser = async () => {
         firstName: user.firstName,
         lastName: user.lastName,
         image: user.image || session.user.image,
+        bookmarks: user.bookmarks,
       },
     };
   } catch (error) {

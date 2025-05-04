@@ -83,9 +83,12 @@ export const authOptions = {
     },
     async session({ session, token }) {
       if (token.id) {
+        await connectDB();
+        const dbUser = await User.findById(token.id).lean();
         session.user.id = token.id;
         session.user.firstName = token.firstName;
         session.user.lastName = token.lastName;
+        session.user.bookmarks = dbUser?.bookmarks || [];
       }
       return session;
     },

@@ -18,6 +18,8 @@ import eye_icon from "./images/eye.svg";
 import eye_slash_icon from "./images/eye_slash.svg";
 import mail_icon from "./images/mail_icon.svg";
 import person_icon from "./images/person_icon.svg";
+import bookmark_fill from "./images/bookmark_fill.svg";
+import apartment_fill from "./images/apartment_fill.svg";
 
 export const assets = {
   check,
@@ -40,4 +42,6 @@ export const assets = {
   eye_slash_icon,
   mail_icon,
   person_icon,
+  bookmark_fill,
+  apartment_fill,
 };

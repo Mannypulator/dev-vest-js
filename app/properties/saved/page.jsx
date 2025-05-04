@@ -4,6 +4,8 @@ import User from "@/models/User";
 import Property from "@/models/Property";
 import { getSessionUser } from "@/utils/getSessionUser";
 import SavedPropertiesList from "@/components/SavedPropertiesList";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -71,7 +73,23 @@ export default async function SavedPropertiesPage() {
     }));
 
     return (
-      <section className={`${poppins.className} px-6 lg:px-24 py-12`}>
+      <section className={`${poppins.className} px-5 sm:px-10 md:px-20 py-12`}>
+        {/* Breadcrumbs */}
+        <div className="sm:text-sm text-xs text-gray-500 bg-white flex items-center gap-2">
+          <Link href="/">
+            <ArrowLeft color="#E6B027" className="cursor-pointer" />
+          </Link>
+          <Link href="/" className="hover:text-[#E6B027]">
+            Home
+          </Link>
+          <span className="text-[#E6B027]">›</span>
+          <Link href="/properties" className="hover:text-[#E6B027]">
+            Properties
+          </Link>
+          <span className="text-[#E6B027]">›</span>
+          <span className="text-[#E6B027] font-semibold">Saved Properties</span>
+        </div>
+
         <div className="bg-white p-6 mx-7 rounded-lg shadow-md">
           <h1 className="text-3xl font-bold mb-6">Saved Properties</h1>
           <SavedPropertiesList properties={serializedProperties} />

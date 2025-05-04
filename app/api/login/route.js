@@ -67,6 +67,7 @@ export async function POST(request) {
           firstName: user.firstName,
           lastName: user.lastName,
           image: user.image,
+          bookmarks: user.bookmarks,
         },
       },
       { status: 200 }

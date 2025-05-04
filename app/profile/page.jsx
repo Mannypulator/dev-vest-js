@@ -61,7 +61,7 @@ const ProfilePage = async () => {
             </div>
             <div className="w-full px-5 sm:px-10 md:px-20 py-10">
               <h2 className="text-2xl font-extrabold mb-4 text-primary">
-                Your Listings
+                Your Listings <span className="text-sm">(<span className="text-sm text-black">{properties.length}</span>)</span>
               </h2>
               {properties.length === 0 ? (
                 <p className="text-secondary">You have no property listings</p>

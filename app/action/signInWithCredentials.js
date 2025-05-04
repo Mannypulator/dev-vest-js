@@ -37,5 +37,6 @@ export async function signInWithCredentials(email, password) {
     firstName: user.firstName,
     lastName: user.lastName,
     image: user.image,
+    bookmarks: user.bookmarks,
   };
 }
