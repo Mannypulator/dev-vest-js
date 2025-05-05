@@ -1,6 +1,7 @@
 import connectDB from "@/config/database";
 import Property from "@/models/Property";
 import { convertToSerializeableObject } from "@/utils/convertToObject";
+import mongoose from "mongoose";
 
 async function getFilteredProperties({
   location,
@@ -9,17 +10,39 @@ async function getFilteredProperties({
   currency,
   isForSale,
 }) {
-  await connectDB();
-
   try {
+    // Verify database connection
+    await connectDB();
+    if (mongoose.connection.readyState !== 1) {
+      throw new Error("Database connection not established");
+    }
+
     const query = {};
 
     if (location && location.trim()) {
       const trimmedLocation = location.trim();
       query["$or"] = [
-        { "location.city": { $regex: trimmedLocation, $options: "i" } },
-        { "location.state": { $regex: trimmedLocation, $options: "i" } },
-        { "location.country": { $regex: trimmedLocation, $options: "i" } },
+        {
+          "location.city": {
+            $regex: trimmedLocation,
+            $options: "i",
+            $exists: true,
+          },
+        },
+        {
+          "location.state": {
+            $regex: trimmedLocation,
+            $options: "i",
+            $exists: true,
+          },
+        },
+        {
+          "location.country": {
+            $regex: trimmedLocation,
+            $options: "i",
+            $exists: true,
+          },
+        },
       ];
     }
 
@@ -27,38 +50,43 @@ async function getFilteredProperties({
       query.type = propertyType;
     }
 
-    if (maximumPrice) {
+    if (maximumPrice && maximumPrice.trim()) {
       // Log raw input for debugging
       console.log(`Raw maximumPrice input: ${maximumPrice}`);
-      // Remove all non-numeric chars except decimal, ensure single decimal point
+      // Remove all non-numeric chars except one decimal point
       const cleanedPrice = maximumPrice
         .replace(/[^0-9.]/g, "") // Keep only digits and decimal
         .replace(/\.{2,}/g, ".") // Replace multiple decimals with one
         .replace(/^\.|\.$/g, ""); // Remove leading/trailing decimal
-      const maxPrice = parseFloat(cleanedPrice);
-      console.log(`Parsed maxPrice: ${maxPrice}`);
+      const maxPrice = parseFloat(cleanedPrice || "0");
+      console.log(
+        `Parsed maxPrice: ${maxPrice}, Cleaned input: ${cleanedPrice}`
+      );
       if (!isNaN(maxPrice) && maxPrice > 0) {
         if (isForSale === "Sale") {
-          query.price = { $lte: maxPrice };
+          query.price = { $lte: maxPrice, $exists: true };
         } else if (isForSale === "Rent") {
+          // Prioritize monthly rates, fall back to others
           query["$or"] = [
-            { "rates.monthly": { $lte: maxPrice } },
-            { "rates.weekly": { $lte: maxPrice } },
-            { "rates.nightly": { $lte: maxPrice } },
+            { "rates.monthly": { $lte: maxPrice, $exists: true } },
+            { "rates.weekly": { $lte: maxPrice, $exists: true } },
+            { "rates.nightly": { $lte: maxPrice, $exists: true } },
           ];
         } else {
           query["$or"] = [
-            { price: { $lte: maxPrice } },
-            { "rates.monthly": { $lte: maxPrice } },
-            { "rates.weekly": { $lte: maxPrice } },
-            { "rates.nightly": { $lte: maxPrice } },
+            { price: { $lte: maxPrice, $exists: true } },
+            { "rates.monthly": { $lte: maxPrice, $exists: true } },
+            { "rates.weekly": { $lte: maxPrice, $exists: true } },
+            { "rates.nightly": { $lte: maxPrice, $exists: true } },
           ];
         }
       } else {
         console.warn(
-          `Invalid maximumPrice: ${maximumPrice} (parsed: ${cleanedPrice}). Ignoring price filter.`
+          `Invalid maximumPrice: ${maximumPrice} (cleaned: ${cleanedPrice}, parsed: ${maxPrice}). Ignoring price filter.`
         );
       }
+    } else {
+      console.log(`maximumPrice is empty or whitespace: ${maximumPrice}`);
     }
 
     if (currency && currency !== "All") {
@@ -66,10 +94,10 @@ async function getFilteredProperties({
       // Map currency symbols to ISO codes
       const symbolToCodeMap = {
         "₦": "NGN",
-        $: "USD",
+        "$": "USD",
         "€": "EUR",
         "£": "GBP",
-        C$: "CAD",
+        "C$": "CAD",
       };
       // Check if currency is a symbol and convert to code, otherwise normalize
       let normalizedCurrency = currency;
@@ -79,7 +107,7 @@ async function getFilteredProperties({
         normalizedCurrency = currency.toUpperCase();
       }
       if (validCurrencies.includes(normalizedCurrency)) {
-        query.currency = normalizedCurrency;
+        query.currency = { $eq: normalizedCurrency, $exists: true };
       } else {
         console.warn(
           `Invalid currency code: ${currency}. Ignoring currency filter.`
@@ -110,7 +138,12 @@ async function getFilteredProperties({
 
     return { success: true, properties: serializedProperties };
   } catch (error) {
-    console.error("Error fetching filtered properties:", error);
+    console.error("Error fetching filtered properties:", {
+      error: error.message,
+      stack: error.stack,
+      input: { location, propertyType, maximumPrice, currency, isForSale },
+      query: JSON.stringify(query || {}),
+    });
     return { error: "An error occurred while fetching properties" };
   }
 }
