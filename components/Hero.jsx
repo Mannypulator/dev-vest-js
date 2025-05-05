@@ -16,7 +16,7 @@ const Hero = () => {
             Future Home
           </span>
         </p>
-        <p className="text-gray-300 text-[12px] sm:text-base md:text-lg md:mb-10 mb-6 flex items-center gap-2">
+        <p className="text-gray-300 text-sm sm:text-base md:text-lg md:mb-10 mb-6 flex items-center gap-2">
           <Image
             src={assets.check}
             height={22}

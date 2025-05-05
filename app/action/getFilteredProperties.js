@@ -1,7 +1,6 @@
-"use server";
-
 import connectDB from "@/config/database";
 import Property from "@/models/Property";
+import { convertToSerializeableObject } from "@/utils/convertToObject";
 
 async function getFilteredProperties({
   location,
@@ -15,10 +14,12 @@ async function getFilteredProperties({
   try {
     const query = {};
 
-    if (location) {
+    if (location && location.trim()) {
+      const trimmedLocation = location.trim();
       query["$or"] = [
-        { "location.city": { $regex: location, $options: "i" } },
-        { "location.state": { $regex: location, $options: "i" } },
+        { "location.city": { $regex: trimmedLocation, $options: "i" } },
+        { "location.state": { $regex: trimmedLocation, $options: "i" } },
+        { "location.country": { $regex: trimmedLocation, $options: "i" } },
       ];
     }
 
@@ -27,8 +28,16 @@ async function getFilteredProperties({
     }
 
     if (maximumPrice) {
-      const maxPrice = parseFloat(maximumPrice.replace(/[^0-9.]/g, ""));
-      if (!isNaN(maxPrice)) {
+      // Log raw input for debugging
+      console.log(`Raw maximumPrice input: ${maximumPrice}`);
+      // Remove all non-numeric chars except decimal, ensure single decimal point
+      const cleanedPrice = maximumPrice
+        .replace(/[^0-9.]/g, "") // Keep only digits and decimal
+        .replace(/\.{2,}/g, ".") // Replace multiple decimals with one
+        .replace(/^\.|\.$/g, ""); // Remove leading/trailing decimal
+      const maxPrice = parseFloat(cleanedPrice);
+      console.log(`Parsed maxPrice: ${maxPrice}`);
+      if (!isNaN(maxPrice) && maxPrice > 0) {
         if (isForSale === "Sale") {
           query.price = { $lte: maxPrice };
         } else if (isForSale === "Rent") {
@@ -45,11 +54,37 @@ async function getFilteredProperties({
             { "rates.nightly": { $lte: maxPrice } },
           ];
         }
+      } else {
+        console.warn(
+          `Invalid maximumPrice: ${maximumPrice} (parsed: ${cleanedPrice}). Ignoring price filter.`
+        );
       }
     }
 
     if (currency && currency !== "All") {
-      query.currency = currency;
+      const validCurrencies = ["NGN", "USD", "EUR", "GBP", "CAD"];
+      // Map currency symbols to ISO codes
+      const symbolToCodeMap = {
+        "₦": "NGN",
+        $: "USD",
+        "€": "EUR",
+        "£": "GBP",
+        C$: "CAD",
+      };
+      // Check if currency is a symbol and convert to code, otherwise normalize
+      let normalizedCurrency = currency;
+      if (symbolToCodeMap[currency]) {
+        normalizedCurrency = symbolToCodeMap[currency];
+      } else {
+        normalizedCurrency = currency.toUpperCase();
+      }
+      if (validCurrencies.includes(normalizedCurrency)) {
+        query.currency = normalizedCurrency;
+      } else {
+        console.warn(
+          `Invalid currency code: ${currency}. Ignoring currency filter.`
+        );
+      }
     }
 
     if (isForSale === "Sale") {
@@ -68,7 +103,12 @@ async function getFilteredProperties({
       return { success: false, error: "No properties found" };
     }
 
-    return { success: true, properties };
+    // Convert properties to plain objects
+    const serializedProperties = properties.map((property) =>
+      convertToSerializeableObject(property)
+    );
+
+    return { success: true, properties: serializedProperties };
   } catch (error) {
     console.error("Error fetching filtered properties:", error);
     return { error: "An error occurred while fetching properties" };

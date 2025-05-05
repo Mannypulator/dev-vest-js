@@ -2,6 +2,8 @@
 import PropertyCard from "@/components/PropertyCard";
 import { Poppins } from "next/font/google";
 import getFilteredProperties from "@/app/action/getFilteredProperties";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -9,7 +11,8 @@ const poppins = Poppins({
 });
 
 export default async function SearchPage({ searchParams }) {
-  const { location, propertyType, maximumPrice, currency, isForSale } = searchParams;
+  const { location, propertyType, maximumPrice, currency, isForSale } =
+    await searchParams;
   const { success, properties, error } = await getFilteredProperties({
     location,
     propertyType,
@@ -20,13 +23,17 @@ export default async function SearchPage({ searchParams }) {
 
   return (
     <section className={`${poppins.className} px-6 lg:px-24 py-12`}>
-      <div className="text-sm text-gray-500 flex items-center gap-2">
-        <span>Home</span> <span className="text-[#E6B027]">›</span>{" "}
+      <div className="sm:text-sm text-xs text-gray-500 bg-white flex items-center gap-2 pb-5">
+        <Link href="/">
+          <ArrowLeft color="#E6B027" className="cursor-pointer" />
+        </Link>
+        <Link href="/" className="hover:text-[#E6B027]">
+          Home
+        </Link>
+        <span className="text-[#E6B027]">›</span>
         <span className="text-[#E6B027] font-semibold">Search Results</span>
       </div>
-      <h2 className="text-xl lg:text-3xl font-bold text-[#E6B027] mt-4 -mb-12">
-        Search Results
-      </h2>
+      
       {success ? (
         properties.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

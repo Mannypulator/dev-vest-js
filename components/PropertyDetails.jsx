@@ -66,10 +66,6 @@ const PropertyDetails = ({ property }) => {
     videoUrl: property.videoUrl || null,
   };
 
-  const handleHomePage = () => {
-    router.push("/");
-  };
-
   return (
     <main>
       {/* Main Image */}
@@ -116,11 +112,9 @@ const PropertyDetails = ({ property }) => {
 
       {/* Breadcrumbs */}
       <div className="sm:text-sm text-xs text-gray-500 bg-white flex items-center gap-2 pt-10 py-5 px-10 rounded">
-        <ArrowLeft
-          onClick={handleHomePage}
-          color="#E6B027"
-          className="cursor-pointer"
-        />
+        <Link href="/">
+          <ArrowLeft color="#E6B027" className="cursor-pointer" />
+        </Link>
         <Link href="/" className="hover:text-[#E6B027]">
           Home
         </Link>

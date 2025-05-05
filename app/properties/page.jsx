@@ -1,4 +1,5 @@
 import PropertyListings from "@/components/PropertyListings";
+import { ArrowLeft } from "lucide-react";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
 
@@ -16,6 +17,9 @@ export default function PropertiesPage() {
       className={`${poppins.className} py-4 px-5 sm:px-10 md:px-20 w-full`}
     >
       <div className="text-sm text-gray-500 flex items-center gap-2">
+        <Link href="/">
+          <ArrowLeft color="#E6B027" className="cursor-pointer" />
+        </Link>
         <Link href="/" className="hover:text-[#E6B027]">
           Home
         </Link>
