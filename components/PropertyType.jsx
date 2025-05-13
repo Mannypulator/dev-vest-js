@@ -19,7 +19,7 @@ const PropertyType = () => {
     "Studio",
     "Other",
   ];
-  const [category, setCategory] = useState<string>("Apartment");
+  const [category, setCategory] = useState("Apartment");
   return (
     <div>
       <Label>Select Category</Label>

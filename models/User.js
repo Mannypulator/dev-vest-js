@@ -22,6 +22,9 @@ const UserSchema = new Schema(
       type: String,
       required: [true, "Last name is required"],
     },
+    emailVerified: {
+      type: Date,
+    },
     image: {
       type: String,
     },
