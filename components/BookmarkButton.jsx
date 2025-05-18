@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
-import { Bookmark } from "lucide-react";
+import { Bookmark, BookmarkCheck } from "lucide-react";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -67,7 +67,11 @@ const BookmarkButton = ({ propertyId }) => {
       onClick={handleClick}
       className="bg-[linear-gradient(97.73deg,_#E6B027_-6.96%,_#9E8441_23.5%,_#705614_92.79%)] text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center cursor-pointer"
     >
-      <Bookmark className="mr-2" />
+      {isBookmarked ? (
+        <BookmarkCheck className="mr-2" />
+      ) : (
+        <Bookmark className="mr-2" />
+      )}
       {isBookmarked ? "Bookmarked" : "Bookmark Property"}
     </button>
   );
