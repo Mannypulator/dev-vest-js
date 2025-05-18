@@ -29,7 +29,7 @@ export async function generateMetadata({ params }) {
     }
     const serializedProperty = convertToSerializeableObject(property);
     return {
-      title: `${serializedProperty.name} | PropertyPulse`,
+      title: `Drive Vest - ${serializedProperty.name}`,
       description:
         serializedProperty.description?.slice(0, 160) ||
         "View this property on PropertyPulse",

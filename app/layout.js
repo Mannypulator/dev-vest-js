@@ -15,8 +15,8 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "PropertyPulse",
-  description: "A modern property management platform built with Next.js",
+  title: "Drive Vest",
+  description: "A modern property management platform",
 };
 
 export default function RootLayout({ children }) {

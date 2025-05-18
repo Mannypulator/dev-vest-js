@@ -12,6 +12,11 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
 });
 
+export const metadata = {
+  title: "Drive Vest - Bookmarked Properties",
+  description: "A modern property management platform",
+};
+
 export default async function SavedPropertiesPage() {
   try {
     await connectDB();

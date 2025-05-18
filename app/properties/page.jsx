@@ -6,6 +6,11 @@ import Link from "next/link";
 // Force dynamic rendering to avoid SSG/caching issues
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  title: "Drive Vest - Properties",
+  description: "A modern property management platform",
+};
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
