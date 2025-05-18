@@ -59,16 +59,16 @@ const LoginHeader = () => {
 
   return (
     <header
-      className={`${poppins.className} bg-[linear-gradient(219.84deg,_var(--text-primary)_4.14%,_var(--text-secondary)_44.22%)] text-white py-4 px-5 sm:px-10 md:px-20 flex justify-between items-center`}
+      className={`${poppins.className} bg-[linear-gradient(219.84deg,_var(--text-primary)_4.14%,_var(--text-secondary)_44.22%)] text-white py-2 px-5 sm:px-10 md:px-20 flex justify-between items-center`}
     >
       <div className="flex items-center">
         <Link href="/">
           <Image
             src={assets.logo}
             alt="Drive Vest Logo"
-            height={40}
-            width={40}
-            className="rounded-full"
+            height={80}
+            width={80}
+            className="md:w-20 w-17"
           />
         </Link>
       </div>
@@ -99,7 +99,7 @@ const LoginHeader = () => {
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger className="border-none bg-white outline-none rounded-full cursor-pointer">
-            <div className="flex items-center space-x-2 bg-white rounded-full p-1 md:p-2">
+            <div className="flex items-center md:space-x-2 bg-white rounded-full p-1">
               <Image
                 src={session?.user?.image || assets.default_profile}
                 alt="User Avatar"
@@ -151,6 +151,7 @@ const LoginHeader = () => {
           </DropdownMenuContent>
         </DropdownMenu>
         <Button
+          size="sm"
           className="bg-[#E6B027] text-white py-0 text-xs sm:text-sm md:text-base sm:py-1 md:py-2 px-2 sm:px-4 md:px-6 rounded-[5px] cursor-pointer"
           onClick={() => openModal("add-post")}
         >

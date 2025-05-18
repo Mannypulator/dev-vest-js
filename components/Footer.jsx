@@ -25,8 +25,8 @@ const Footer = () => {
             <Image
               className="mb-6"
               src={assets.logo}
-              width={50}
-              height={50}
+              width={80}
+              height={80}
               alt="drive vest logo"
               priority={true}
             />
