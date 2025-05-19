@@ -547,7 +547,7 @@ export function Modals() {
             <DialogHeader>
               <div className="flex justify-center mb-4 space-y-0">
                 <Image
-                  className="sm:w-32 w-24 rounded-2xl bg-gray-300"
+                  className="sm:w-32 w-24 rounded-2xl bg-[#E6B027]"
                   src={assets.logo}
                   alt="Drive Vest Logo"
                   height={100}
@@ -706,7 +706,7 @@ export function Modals() {
             <DialogHeader>
               <div className="flex justify-center mb-4 space-y-0">
                 <Image
-                  className="sm:w-32 w-24 rounded-2xl bg-gray-300"
+                  className="sm:w-32 w-24 rounded-2xl bg-[#E6B027]"
                   src={assets.logo}
                   alt="Drive Vest Logo"
                   height={100}
@@ -912,7 +912,7 @@ export function Modals() {
           <DialogHeader>
             <div className="flex justify-center mb-4 space-y-0">
               <Image
-                className="sm:w-32 w-24 rounded-2xl bg-gray-300"
+                className="sm:w-32 w-24 rounded-2xl bg-[#E6B027]"
                 src={assets.logo}
                 alt="Drive Vest Logo"
                 height={100}
@@ -952,7 +952,7 @@ export function Modals() {
           <DialogHeader>
             <div className="flex justify-center mb-4 space-y-0">
               <Image
-                className="sm:w-32 w-24 rounded-2xl bg-gray-300"
+                className="sm:w-32 w-24 rounded-2xl bg-[#E6B027]"
                 src={assets.logo}
                 alt="Drive Vest Logo"
                 height={100}
