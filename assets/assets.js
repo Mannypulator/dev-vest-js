@@ -20,6 +20,7 @@ import mail_icon from "./images/mail_icon.svg";
 import person_icon from "./images/person_icon.svg";
 import bookmark_fill from "./images/bookmark_fill.svg";
 import apartment_fill from "./images/apartment_fill.svg";
+import logo2 from "./images/logo2.jpeg";
 
 export const assets = {
   check,
@@ -44,4 +45,5 @@ export const assets = {
   person_icon,
   bookmark_fill,
   apartment_fill,
+  logo2,
 };

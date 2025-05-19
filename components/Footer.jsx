@@ -23,10 +23,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_3fr_1fr] lg:grid-cols-[1fr_1fr_2fr_1fr] lg:gap-8 md:gap-4 font-normal text-lg text-center md:text-left">
           <div className="flex flex-col items-center md:items-start justify-between">
             <Image
-              className="mb-6"
+              className="sm:w-32 w-24 mb-6"
               src={assets.logo}
-              width={80}
-              height={80}
+              width={100}
+              height={100}
               alt="drive vest logo"
               priority={true}
             />

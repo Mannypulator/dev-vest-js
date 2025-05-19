@@ -547,11 +547,11 @@ export function Modals() {
             <DialogHeader>
               <div className="flex justify-center mb-4 space-y-0">
                 <Image
-                  className="-mb-4"
+                  className="sm:w-32 w-24 rounded-2xl bg-gray-300"
                   src={assets.logo}
                   alt="Drive Vest Logo"
-                  height={40}
-                  width={40}
+                  height={100}
+                  width={100}
                 />
               </div>
               <DialogTitle
@@ -706,11 +706,11 @@ export function Modals() {
             <DialogHeader>
               <div className="flex justify-center mb-4 space-y-0">
                 <Image
-                  className="-mb-4"
+                  className="sm:w-32 w-24 rounded-2xl bg-gray-300"
                   src={assets.logo}
                   alt="Drive Vest Logo"
-                  height={40}
-                  width={40}
+                  height={100}
+                  width={100}
                 />
               </div>
               <DialogTitle
@@ -912,11 +912,11 @@ export function Modals() {
           <DialogHeader>
             <div className="flex justify-center mb-4 space-y-0">
               <Image
-                className="-mb-4"
+                className="sm:w-32 w-24 rounded-2xl bg-gray-300"
                 src={assets.logo}
                 alt="Drive Vest Logo"
-                height={40}
-                width={40}
+                height={100}
+                width={100}
               />
             </div>
             <DialogTitle className="text-center text-2xl font-bold -mb-4">
@@ -952,11 +952,11 @@ export function Modals() {
           <DialogHeader>
             <div className="flex justify-center mb-4 space-y-0">
               <Image
-                className="-mb-4"
+                className="sm:w-32 w-24 rounded-2xl bg-gray-300"
                 src={assets.logo}
                 alt="Drive Vest Logo"
-                height={40}
-                width={40}
+                height={100}
+                width={100}
               />
             </div>
             <DialogTitle className="text-center text-2xl font-bold -mb-4">

@@ -59,16 +59,16 @@ const LoginHeader = () => {
 
   return (
     <header
-      className={`${poppins.className} bg-[linear-gradient(219.84deg,_var(--text-primary)_4.14%,_var(--text-secondary)_44.22%)] text-white py-2 px-5 sm:px-10 md:px-20 flex justify-between items-center`}
+      className={`${poppins.className} bg-[linear-gradient(219.84deg,_var(--text-primary)_4.14%,_var(--text-secondary)_44.22%)] text-white px-5 sm:px-10 md:px-20 flex justify-between items-center`}
     >
       <div className="flex items-center">
         <Link href="/">
           <Image
             src={assets.logo}
             alt="Drive Vest Logo"
-            height={80}
-            width={80}
-            className="md:w-20 w-17"
+            height={100}
+            width={100}
+            className="sm:w-32 w-24"
           />
         </Link>
       </div>
